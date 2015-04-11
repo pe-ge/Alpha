@@ -6,7 +6,6 @@ import com.pege.alpha.graphics.Sprites;
 
 public abstract class Tile {
 	
-	public int x, y;
 	public Sprite sprite;
 	
 	public static Tile grassTile1 = new GrassTile(Sprites.grassSprite1);
@@ -16,7 +15,8 @@ public abstract class Tile {
 	public static Tile woodTile = new HedgeTile(Sprites.woodSprite);
 	public static Tile voidTile = new VoidTile(Sprites.voidSprite);
 	
-	public static final int COLOUR_GRASS = 0xff00ff00;
+	public static final int COLOUR_GRASS1 = 0xff00ff00;
+	public static final int COLOUR_GRASS2 = 0xff00ff01;
 	public static final int COLOUR_FLOWER = 0xffffff00;
 	public static final int COLOUR_ROCK = 0xffbababa;
 	public static final int COLOUR_WOOD = 0xff7f7f00;

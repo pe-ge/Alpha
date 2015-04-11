@@ -16,7 +16,7 @@ public class Player extends Mob {
 		super(position);
 		this.keyboard = keyboard;
 		this.mouse = mouse;
-		speed = 1.3;
+		speed = 1.0;
 	}
 	
 	public void update() {

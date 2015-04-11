@@ -3,35 +3,53 @@ package com.pege.alpha.entity.mob;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Dummy extends Mob {
-	
-	public Dummy(TileCoordinate position) {
-		super(position);
-	}
 
-	private int time = 0;
-	private int xa = 0;
-	private int ya = 0;
+	private double xa = 0;
+	private double ya = 0;
+	private int radius;
+	
+	private Player player;
+
+	public Dummy(TileCoordinate position, int radius) {
+		super(position);
+		this.radius = radius;
+		speed = 0.5;
+	}
 	
 	public void update() {
 		super.update();
-		time++;
-
-		if (time % (random.nextInt(50) + 30) == 0) {
-			xa = random.nextInt(3) - 1;
-			ya = random.nextInt(3) - 1;
-			
-			if (random.nextInt(3) == 0) {
-				xa = 0;
-				ya = 0;
-			}
-		}
-		
-		if (xa == 0 && ya == 0) {
-			walking = false;
+		if (getDistanceFromPlayer() <= radius) {
+			xa = speed * signum((int)player.getX() - x);
+			ya = speed * signum((int)player.getY() - y);
 		} else {
-			walking = true;
+			if (time % (random.nextInt(50) + 30) == 0) {
+				xa = speed * (random.nextInt(3) - 1);
+				ya = speed * (random.nextInt(3) - 1);
+				
+				if (random.nextInt(3) == 0) {
+					xa = 0;
+					ya = 0;
+				}
+			}
+			
 		}
-		move(xa, ya);
+
+		if (xa != 0 || ya != 0) {
+			walking = true;
+			move(xa, ya);
+		} else {
+			walking = false;
+		}
+	}
+	
+	private double getDistanceFromPlayer() {
+		if (player == null) {
+			player = level.getPlayer();
+		}
+		double dx = x - player.getX();
+		double dy = y - player.getY();
+		double dis = Math.sqrt(dx * dx + dy * dy);
+		return dis;
 	}
 
 }

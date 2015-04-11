@@ -18,7 +18,7 @@ public abstract class Mob extends Entity {
 	protected boolean walking = false;
 	protected int fireRate = 10;
 	protected int fireAllowed = 0;
-	private int anim = 0;
+	protected int time = 0;
 	
 	public Mob(TileCoordinate position) {
 		this.x = position.x();
@@ -67,11 +67,13 @@ public abstract class Mob extends Entity {
 		}
 	}
 	
-	private int signum(double x) {
+	protected int signum(double x) {
 		if (x > 0.0) {
 			return 1;
-		} else {
+		} else if (x < 0.0){
 			return -1;
+		} else {
+			return 0;
 		}
 	}
 
@@ -81,7 +83,7 @@ public abstract class Mob extends Entity {
 	}
 	
 	public void update() {
-		anim = (anim != 10000 ? anim + 1 : 0);
+		time = (time != 100000 ? time + 1 : 0); //increment time
 	}
 	
 	public void render(Screen screen) {
@@ -101,14 +103,14 @@ public abstract class Mob extends Entity {
 		if (!walking) {
 			index = 0;
 		} else if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-			index = (anim >> 3) % 4;
+			index = (time >> 3) % 4;
 			if (index == 0) {
 				index = 1;
 			} else if (index == 1 || index == 3) {
 				index = 0;
 			}
 		} else {
-			index = (anim >> 3) % (sprites.length - 1) + 1;
+			index = (time >> 3) % (sprites.length - 1) + 1;
 		}
 		
 		sprite = sprites[index];

@@ -10,27 +10,39 @@ import javax.imageio.ImageIO;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Dummy;
+import com.pege.alpha.entity.mob.Player;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.level.tile.Tile;
 
 public class Level {
 	
-	protected int width, height;
-	protected int[] tiles;
+	private int width, height;
+	private int[] tiles;
 	
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Entity> entitiesToBeAdded = new ArrayList<Entity>();
+	private Player player;
 	
 	public static Level spawn = new Level("/levels/level1.png");
 	
 	public Level(String path) {
 		loadLevel(path);
 		
-		TileCoordinate coordinate = new TileCoordinate(2, 2);
-		for (int i = 0; i < 100; i++) {
-			addEntity(new Dummy(coordinate));
+		TileCoordinate coordinate = new TileCoordinate(10, 2);
+		addEntity(new Dummy(coordinate, 50));
+	}
+	
+	public Player getPlayer() {
+		if (player == null) {
+			for (Entity e : entities) {
+				if (e instanceof Player) {
+					player = (Player)e;
+					break;
+				}
+			}
 		}
+		return player;
 	}
 
 	protected void loadLevel(String path) {
@@ -46,6 +58,13 @@ public class Level {
 					.println("Could not load level file. Path does not exist: "
 							+ path);
 			e.printStackTrace();
+		}
+		
+		//randomize grass
+		for (int i = 0; i < tiles.length; i++) {
+			if (tiles[i] == Tile.COLOUR_GRASS1 && Math.random() < 0.5) {
+				tiles[i] = Tile.COLOUR_GRASS2;
+			}
 		}
 	}
 	
@@ -86,7 +105,8 @@ public class Level {
 	
 	public Tile getTile(int x, int y) {
 		if (x < 0 || x >= width || y < 0 || y >= height) return Tile.voidTile;
-		if (tiles[x + y * width] == Tile.COLOUR_GRASS) return Tile.grassTile1;
+		if (tiles[x + y * width] == Tile.COLOUR_GRASS1) return Tile.grassTile1;
+		if (tiles[x + y * width] == Tile.COLOUR_GRASS2) return Tile.grassTile2;
 		if (tiles[x + y * width] == Tile.COLOUR_FLOWER) return Tile.flowerTile;
 		if (tiles[x + y * width] == Tile.COLOUR_ROCK) return Tile.rockTile;
 		if (tiles[x + y * width] == Tile.COLOUR_WOOD) return Tile.woodTile;
