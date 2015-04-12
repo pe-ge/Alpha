@@ -47,16 +47,13 @@ public class Level {
 
 	protected void loadLevel(String path) {
 		try {
-			BufferedImage image = ImageIO.read(Level.class
-					.getResource(path));
+			BufferedImage image = ImageIO.read(Level.class.getResource(path));
 			width = image.getWidth();
 			height = image.getWidth();
 			tiles = new int[width * height];
 			image.getRGB(0, 0, width, height, tiles, 0, width);
 		} catch (IOException e) {
-			System.err
-					.println("Could not load level file. Path does not exist: "
-							+ path);
+			System.err.println("Could not load level file. Path does not exist: " + path);
 			e.printStackTrace();
 		}
 		
