@@ -11,7 +11,7 @@ public class BasicProjectile extends Projectile {
 
 	public BasicProjectile(double xOrigin, double yOrigin, double angle) {
 		super(xOrigin, yOrigin, angle);
-		speed = 3.5;
+		speed = 0.1;
 		range = random.nextInt(150) + 150;
 		damage = 20;
 		distance = 0;
@@ -32,7 +32,7 @@ public class BasicProjectile extends Projectile {
 	}
 	
 	protected void move() {
-		if (!level.tileCollision(this, dx, dx)) {
+		if (!level.tileCollision(this, dx, dy)) {
 			x += dx;
 			y += dy;
 			distance += dd;
@@ -43,7 +43,7 @@ public class BasicProjectile extends Projectile {
 	}
 	
 	public void render(Screen screen) {
-		if (!removed()) screen.renderSprite((int)x, (int)y, sprite);
+		if (!removed()) screen.renderSprite((int)x - 4, (int)y - 4, sprite);
 	}
 
 }

@@ -8,7 +8,7 @@ public class Screen {
 	
 	public int xOffset, yOffset;
 	
-	private int TRANSPARENT_COLOUR = 0xffff00ff;
+	private int ALPHA_COLOUR = 0xffff00ff;
 	
 	public Screen(int width, int height) {
 		this.width = width;
@@ -31,13 +31,14 @@ public class Screen {
 		
 		for (int y = 0; y < size; y++) {
 			int ya = y + yp;
+			if (ya < 0 || ya >= height) continue;
 			for (int x = 0; x < size; x++) {
 				int xa = x + xp;
-				if (xa < -size || xa >= width || ya < 0 || ya >= height) break;
+				if (xa < -size || xa >= width) break;
 				if (xa < 0) xa = 0;
 				
 				int colour = sprite.pixels[x + y * size];
-				if (colour != TRANSPARENT_COLOUR) {
+				if (colour != ALPHA_COLOUR) {
 					pixels[xa + ya * width] = sprite.pixels[x + y * size];
 				}
 			}

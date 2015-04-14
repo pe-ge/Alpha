@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Dummy;
-import com.pege.alpha.entity.mob.Player;
+import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.level.tile.Tile;

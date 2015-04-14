@@ -1,5 +1,6 @@
 package com.pege.alpha.entity.mob;
 
+import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Dummy extends Mob {
@@ -7,13 +8,13 @@ public class Dummy extends Mob {
 	private double xa = 0;
 	private double ya = 0;
 	private int radius;
+	private double speed = 0.5;
 	
 	private Player player;
 
 	public Dummy(TileCoordinate position, int radius) {
 		super(position);
 		this.radius = radius;
-		speed = 0.5;
 	}
 	
 	public void update() {

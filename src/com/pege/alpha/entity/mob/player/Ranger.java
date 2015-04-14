@@ -1,4 +1,4 @@
-package com.pege.alpha.entity.mob;
+package com.pege.alpha.entity.mob.player;
 
 import java.awt.event.MouseEvent;
 
@@ -7,35 +7,35 @@ import com.pege.alpha.input.Keyboard;
 import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.TileCoordinate;
 
-public class Player extends Mob {
+
+public class Ranger extends Player {
 	
-	private Keyboard keyboard;
-	private Mouse mouse;
-	
-	public Player(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
-		super(position);
-		this.keyboard = keyboard;
-		this.mouse = mouse;
-		speed = 1.0;
+	private double speed = 1;
+
+	public Ranger(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
+		super(position, keyboard, mouse);
 	}
 	
 	public void update() {
 		super.update();
 		
-		double xa = 0, ya = 0;
-		if (keyboard.up) ya -= speed;
-		if (keyboard.down) ya += speed;
-		if (keyboard.left) xa -= speed;
-		if (keyboard.right) xa += speed;
+		updateMovement();
+		updateShooting();
+	}
+	
+	private void updateMovement() {
+		double dx = 0, dy = 0;
+		if (keyboard.up) dy -= speed;
+		if (keyboard.down) dy += speed;
+		if (keyboard.left) dx -= speed;
+		if (keyboard.right) dx += speed;
 		
-		if (xa != 0 || ya != 0) {
+		if (dx != 0 || dy != 0) {
 			walking = true;
-			move(xa, ya);
+			move(dx, dy);
 		} else {
 			walking = false;
 		}
-		
-		updateShooting();
 	}
 	
 	private void updateShooting() {
@@ -47,5 +47,5 @@ public class Player extends Mob {
 			fireAllowed = fireRate;
 		}
 	}
-	
+
 }

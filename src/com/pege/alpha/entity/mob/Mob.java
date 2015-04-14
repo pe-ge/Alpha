@@ -68,13 +68,10 @@ public abstract class Mob extends Entity {
 	}
 	
 	protected int signum(double x) {
-		if (x > 0.0) {
-			return 1;
-		} else if (x < 0.0){
-			return -1;
-		} else {
-			return 0;
-		}
+		int xi = (int)x;
+		xi = Math.min(1, xi);
+		xi = Math.max(-1, xi);
+		return xi;
 	}
 
 	protected void shoot(double x, double y, double angle) {

@@ -5,9 +5,9 @@ public class Sprite {
 	public final int SPRITE_SIZE; //size of whole sprite in spritesheet
 	public int[] pixels;
 	
-	private int entitySize = 15; //size of entity in pixels
-	private int xOffset = 7; //distance in sprite from left corner (in pixels)
-	private int yOffset = 15; //distance in sprite from upper corner (in pixels)
+	private int entitySize; //size of entity in pixels
+	private int xOffset; //distance in sprite from left corner (in pixels)
+	private int yOffset; //distance in sprite from upper corner (in pixels)
 	
 	private SpriteSheet spriteSheet;
 	

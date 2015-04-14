@@ -1,2 +1,2 @@
 # Alpha
-My first java game based on Cherno tutorials.
+My first Java game based on Cherno tutorials.

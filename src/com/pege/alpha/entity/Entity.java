@@ -9,7 +9,6 @@ import com.pege.alpha.level.Level;
 public abstract class Entity {
 	
 	protected double x, y;
-	protected double speed = 1.0;
 	protected boolean removed = false;
 	protected Sprite sprite;
 	protected Level level;
