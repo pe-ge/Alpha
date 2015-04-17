@@ -8,7 +8,7 @@ public abstract class Spawner extends Entity {
 		MOB, PARTICLE
 	}
 	
-	public Spawner(int x, int y) {
+	public Spawner(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}

@@ -4,26 +4,26 @@ import com.pege.alpha.entity.particle.Particle;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.level.Level;
 
-public class ParticleSpawner extends Spawner {
+public class InfiniteParticleSpawner extends Spawner {
 	
-	public ParticleSpawner(double x, double y, int life, int amount, Level level) {
+	private int life;
+	private Level level;
+
+	public InfiniteParticleSpawner(int x, int y, int life, Level level) {
 		super(x, y);
-		for (int i = 0; i < amount; i++) {
-			level.addEntity(new Particle(x, y, life));
-		}
+		this.life = life;
+		this.level = level;
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		level.addEntity(new Particle(x, y, life));
 	}
 
 	@Override
 	public void render(Screen screen) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
 }
