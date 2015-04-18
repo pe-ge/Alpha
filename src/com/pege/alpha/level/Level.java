@@ -33,7 +33,7 @@ public class Level {
 		TileCoordinate coordinate = new TileCoordinate(10, 2);
 		addEntity(new Dummy(coordinate, 50));
 		
-		addEntity(new InfiniteParticleSpawner(7 * 16 + 8, 7 * 16 + 8, 20, this));
+		addEntity(new InfiniteParticleSpawner(7 * 16 + 8, 7 * 16 + 8, 20000, this));
 	}
 	
 	public Player getPlayer() {

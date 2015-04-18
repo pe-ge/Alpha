@@ -42,6 +42,7 @@ public class Particle extends Entity {
 	}
 	
 	public void move(double x, double y) {
+		
 		if (tileCollision(x, y)) {
 			this.dx *= -0.5;
 			this.dy *= -0.5;

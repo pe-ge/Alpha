@@ -13,8 +13,8 @@ public class Sprite {
 	
 	
 	public Sprite(int spriteSize, int x, int y, SpriteSheet spriteSheet) {
-		SPRITE_SIZE = spriteSize;
-		pixels = new int[SPRITE_SIZE * SPRITE_SIZE];
+		this.SPRITE_SIZE = spriteSize;
+		this.pixels = new int[SPRITE_SIZE * SPRITE_SIZE];
 		this.spriteSheet = spriteSheet;
 		load(x * spriteSize, y * spriteSize);
 	}
@@ -26,9 +26,12 @@ public class Sprite {
 		this.yOffset = yOffset;
 	}
 	
-	public Sprite(int size, int colour) {
-		SPRITE_SIZE = size;
-		pixels = new int[SPRITE_SIZE * SPRITE_SIZE];
+	public Sprite(int spriteSize, int colour) {
+		this.SPRITE_SIZE = spriteSize;
+		this.entitySize = spriteSize;
+		this.pixels = new int[SPRITE_SIZE * SPRITE_SIZE];
+		this.xOffset = 0;
+		this.yOffset = 0;
 		setColour(colour);
 	}
 

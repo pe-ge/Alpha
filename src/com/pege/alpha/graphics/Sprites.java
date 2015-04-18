@@ -11,7 +11,7 @@ public class Sprites {
 	
 	public static Sprite projectile = new Sprite(16, 0, 0, SpriteSheet.projectiles, 5, 6, 6);
 	
-	public static Sprite particle = new Sprite(1, 0x000000);
+	public static Sprite particle = new Sprite(1, 0xfa0000);
 	
 	public static Sprite[] playerUp = new Sprite[]{
 		new Sprite(32, 0, 5, SpriteSheet.tiles, 15, 7, 15),

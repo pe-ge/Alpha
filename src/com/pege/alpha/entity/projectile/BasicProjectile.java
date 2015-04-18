@@ -6,20 +6,23 @@ import com.pege.alpha.graphics.Sprites;
 
 public class BasicProjectile extends Projectile {
 	
-	private int particlesLife = 20;
-	private int particlesAmount = 50;
+	private int particlesLife;
+	private int particlesAmount;
 
 	public BasicProjectile(double xOrigin, double yOrigin, double angle) {
 		super(xOrigin, yOrigin, angle);
-		speed = 0.1;
-		range = random.nextInt(150) + 150;
-		damage = 20;
-		distance = 0;
-		sprite = Sprites.projectile;
+		this.speed = 10;
+		this.range = random.nextInt(150) + 150;
+		this.damage = 20;
+		this.distance = 0;
+		this.sprite = Sprites.projectile;
 		
-		dx = speed * Math.cos(angle);
-		dy = speed * Math.sin(angle);
-		dd = Math.sqrt(dx * dx + dy * dy);
+		this.dx = speed * Math.cos(angle);
+		this.dy = speed * Math.sin(angle);
+		this.dd = Math.sqrt(dx * dx + dy * dy);
+		
+		this.particlesLife = 20;
+		this.particlesAmount = 50;
 	}
 	
 	public void update() {
@@ -37,7 +40,7 @@ public class BasicProjectile extends Projectile {
 			y += dy;
 			distance += dd;
 		} else {
-			level.addEntity(new ParticleSpawner((int)x, (int)y + 1, particlesLife, particlesAmount, level));
+			level.addEntity(new ParticleSpawner((int)x + 4, (int)y + 1, particlesLife, particlesAmount, level));
 			remove();
 		}
 	}
