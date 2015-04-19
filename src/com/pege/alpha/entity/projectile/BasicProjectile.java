@@ -1,17 +1,16 @@
 package com.pege.alpha.entity.projectile;
 
+import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.spawner.ParticleSpawner;
 import com.pege.alpha.graphics.Screen;
+import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.graphics.Sprites;
 
 public class BasicProjectile extends Projectile {
 	
-	private int particlesLife;
-	private int particlesAmount;
-
-	public BasicProjectile(double xOrigin, double yOrigin, double angle) {
-		super(xOrigin, yOrigin, angle);
-		this.speed = 10;
+	public BasicProjectile(Mob owner, double xOrigin, double yOrigin, double angle) {
+		super(owner, xOrigin, yOrigin, angle);
+		this.speed = 5;
 		this.range = random.nextInt(150) + 150;
 		this.damage = 20;
 		this.distance = 0;
@@ -20,9 +19,6 @@ public class BasicProjectile extends Projectile {
 		this.dx = speed * Math.cos(angle);
 		this.dy = speed * Math.sin(angle);
 		this.dd = Math.sqrt(dx * dx + dy * dy);
-		
-		this.particlesLife = 20;
-		this.particlesAmount = 50;
 	}
 	
 	public void update() {
@@ -35,12 +31,23 @@ public class BasicProjectile extends Projectile {
 	}
 	
 	protected void move() {
-		if (!level.tileCollision(this, dx, dy)) {
+		boolean collisionEntityTile = level.collisionEntityTile(this, dx, dy);
+		Mob collisionMobParticle = level.collisionMobParticle(this, dx, dy);
+		
+		if (!collisionEntityTile && collisionMobParticle == null) {
 			x += dx;
 			y += dy;
 			distance += dd;
 		} else {
-			level.addEntity(new ParticleSpawner((int)x + 4, (int)y + 1, particlesLife, particlesAmount, level));
+			if (collisionEntityTile) {
+				level.addEntity(new ParticleSpawner(Sprites.blackParticle, (int)x + 4, (int)y + 1, 20, 50, level));
+			}
+			if (collisionMobParticle != null) {
+				int mobX = (int)collisionMobParticle.getX();
+				int mobY = (int)collisionMobParticle.getY();
+				level.addEntity(new ParticleSpawner(Sprites.redParticle, mobX, mobY, 20, 200, level));
+			}
+			
 			remove();
 		}
 	}

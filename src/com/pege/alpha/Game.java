@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 
 import com.pege.alpha.entity.mob.player.Car;
 import com.pege.alpha.entity.mob.player.Player;
+import com.pege.alpha.entity.mob.player.Ranger;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.input.Keyboard;
 import com.pege.alpha.input.Mouse;
@@ -52,7 +53,7 @@ public class Game extends Canvas implements Runnable {
 		mouse = new Mouse();
 		level = Level.spawn;
 		TileCoordinate playerSpawn = new TileCoordinate(2, 2);
-		player = new Car(playerSpawn, keyboard, mouse);
+		player = new Ranger(playerSpawn, keyboard, mouse);
 		level.addEntity(player);
 		
 		addKeyListener(keyboard);

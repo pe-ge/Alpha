@@ -10,8 +10,9 @@ import javax.imageio.ImageIO;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Dummy;
+import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.mob.player.Player;
-import com.pege.alpha.entity.spawner.InfiniteParticleSpawner;
+import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.level.tile.Tile;
@@ -23,6 +24,7 @@ public class Level {
 	
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Entity> entitiesToBeAdded = new ArrayList<Entity>();
+	private List<Mob> mobs = new ArrayList<Mob>();
 	private Player player;
 	
 	public static Level spawn = new Level("/levels/level1.png");
@@ -30,15 +32,15 @@ public class Level {
 	public Level(String path) {
 		loadLevel(path);
 		
-		TileCoordinate coordinate = new TileCoordinate(10, 2);
-		addEntity(new Dummy(coordinate, 50));
+		TileCoordinate coordinate = new TileCoordinate(5, 5);
+		addEntity(new Dummy(coordinate, 20));
 		
-		addEntity(new InfiniteParticleSpawner(7 * 16 + 8, 7 * 16 + 8, 20000, this));
+		//addEntity(new InfiniteParticleSpawner(7 * 16 + 8, 7 * 16 + 8, 20000, this));
 	}
 	
 	public Player getPlayer() {
 		if (player == null) {
-			for (Entity e : entities) {
+			for (Mob e : mobs) {
 				if (e instanceof Player) {
 					player = (Player)e;
 					break;
@@ -101,6 +103,7 @@ public class Level {
 	public void addEntity(Entity e) {
 		e.setLevel(this);
 		entitiesToBeAdded.add(e);
+		if (e instanceof Mob) mobs.add((Mob)e);
 	}
 	
 	public Tile getTile(int x, int y) {
@@ -113,7 +116,7 @@ public class Level {
 		return Tile.voidTile;
 	}
 	
-	public boolean tileCollision(Entity e, double dx, double dy) {
+	public boolean collisionEntityTile(Entity e, double dx, double dy) {
 		Sprite s = e.getSprite();
 		if (s == null) {
 			return false;
@@ -129,5 +132,33 @@ public class Level {
 			solid |= getTile(xt, yt).solid();
 		}
 		return solid;
+	}
+	
+	public Mob collisionMobParticle(Projectile p, double dx, double dy) {
+		for (Mob m : mobs) {
+			if (collisionMobParticle(m, p, dx, dy)) {
+				return m;
+			}
+		}
+		
+		return null;
+	}
+	
+	private boolean collisionMobParticle(Mob m, Projectile p, double dx, double dy) {
+		if (m.getSprite() == null || p.getSprite() == null || p.getOwner() == m) {
+			return false;
+		}
+		
+		double x1 = m.getX() - 2;
+		double y1 = m.getY() - 8;
+		double w1 = m.getSprite().SPRITE_SIZE - 20;
+		double h1 = m.getSprite().SPRITE_SIZE - 4;
+		
+		double x2 = p.getX() + dx + 4;
+		double y2 = p.getY() + dy + 4;
+		double w2 = p.getSprite().getEntitySize();
+		double h2 = p.getSprite().getEntitySize();
+		
+		return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;  
 	}
 }

@@ -2,6 +2,7 @@ package com.pege.alpha.entity.particle;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.graphics.Screen;
+import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.graphics.Sprites;
 
 public class Particle extends Entity {
@@ -11,13 +12,13 @@ public class Particle extends Entity {
 	protected double x, y, z;
 	protected double dx, dy, dz;
 	
-	public Particle(double x, double y, int life) {
+	public Particle(Sprite sprite, double x, double y, int life) {
 		this.x = x;
 		this.y = y;
 		this.z = random.nextDouble() + 2.0;
 		this.life = life + random.nextInt(50);
 		
-		sprite = Sprites.particle;
+		this.sprite = sprite;
 		
 		this.dx = random.nextGaussian();
 		this.dy = random.nextGaussian();

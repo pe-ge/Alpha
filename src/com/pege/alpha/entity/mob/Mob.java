@@ -16,9 +16,10 @@ public abstract class Mob extends Entity {
 	
 	protected Direction direction = Direction.DOWN;
 	protected boolean walking = false;
-	protected int fireRate = 10;
+	protected int fireRate = 100;
 	protected int fireAllowed = 0;
 	protected int time = 0;
+	protected int life = 100;
 	
 	public Mob(TileCoordinate position) {
 		this.x = position.x();
@@ -38,7 +39,7 @@ public abstract class Mob extends Entity {
 		if (dy > 0) direction = Direction.DOWN;
 		if (dy < 0) direction = Direction.UP;
 		
-		if (!level.tileCollision(this, dx, dy)) {
+		if (!level.collisionEntityTile(this, dx, dy)) {
 			x += dx;
 			y += dy;
 		} else {
@@ -51,7 +52,7 @@ public abstract class Mob extends Entity {
 		int signY = signum(dy);
 		
 		while (Math.abs(dx) > 1.0) {
-			if (!level.tileCollision(this, signX, 0)) {
+			if (!level.collisionEntityTile(this, signX, 0)) {
 				x += signX;
 			}
 			
@@ -59,7 +60,7 @@ public abstract class Mob extends Entity {
 		}
 		
 		while (Math.abs(dy) > 1.0) {
-			if (!level.tileCollision(this, 0, signY)) {
+			if (!level.collisionEntityTile(this, 0, signY)) {
 				y += signY;
 			}
 			
@@ -75,7 +76,7 @@ public abstract class Mob extends Entity {
 	}
 
 	protected void shoot(double x, double y, double angle) {
-		Projectile projectile = new BasicProjectile(x, y, angle);
+		Projectile projectile = new BasicProjectile(this, x, y, angle);
 		level.addEntity(projectile);
 	}
 	

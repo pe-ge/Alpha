@@ -10,7 +10,7 @@ import com.pege.alpha.level.TileCoordinate;
 
 public class Ranger extends Player {
 	
-	private double speed = 1;
+	private double speed = 2;
 
 	public Ranger(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
 		super(position, keyboard, mouse);
