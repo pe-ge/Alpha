@@ -9,7 +9,6 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-import com.pege.alpha.entity.mob.player.Car;
 import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.entity.mob.player.Ranger;
 import com.pege.alpha.graphics.Screen;
@@ -17,6 +16,8 @@ import com.pege.alpha.input.Keyboard;
 import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.level.TileCoordinate;
+import com.pege.alpha.network.Client;
+import com.pege.alpha.network.Server;
 
 public class Game extends Canvas implements Runnable {
 	
@@ -30,7 +31,7 @@ public class Game extends Canvas implements Runnable {
 	
 	public static String title = "Alpha";
 	
-	private Thread thread;
+	private Thread mainThread;
 	private JFrame frame;
 	private Keyboard keyboard;
 	private Mouse mouse;
@@ -39,7 +40,6 @@ public class Game extends Canvas implements Runnable {
 	private boolean running = false;
 	
 	private Screen screen;
-	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB); //final view
 	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 	
@@ -52,7 +52,7 @@ public class Game extends Canvas implements Runnable {
 		keyboard = new Keyboard();
 		mouse = new Mouse();
 		level = Level.spawn;
-		TileCoordinate playerSpawn = new TileCoordinate(2, 2);
+		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
 		player = new Ranger(playerSpawn, keyboard, mouse);
 		level.addEntity(player);
 		
@@ -63,14 +63,14 @@ public class Game extends Canvas implements Runnable {
 	
 	public synchronized void start() {
 		running = true;
-		thread = new Thread(this, "display");
-		thread.start();
+		mainThread = new Thread(this, "Display");
+		mainThread.start();
 	}
 	
 	public synchronized void stop() {
 		running = false;
 		try {
-			thread.join();
+			mainThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -145,5 +145,17 @@ public class Game extends Canvas implements Runnable {
 		game.frame.setVisible(true);
 		
 		game.start();
+		switch (args.length) {
+			case 1: //server
+				int port = Integer.parseInt(args[0]);
+				Server.initServer(port);
+				Client.initClient("localhost", port);
+				break;
+			case 2: //client
+				Client.initClient(args[0], Integer.parseInt(args[1]));
+				Client.getClient().sendPosition(game.player);
+				Client.getClient().sendPosition(game.player);
+				break;
+		}
 	}
 }

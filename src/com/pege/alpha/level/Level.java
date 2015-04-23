@@ -31,11 +31,6 @@ public class Level {
 	
 	public Level(String path) {
 		loadLevel(path);
-		
-		TileCoordinate coordinate = new TileCoordinate(5, 5);
-		addEntity(new Dummy(coordinate, 20));
-		
-		//addEntity(new InfiniteParticleSpawner(7 * 16 + 8, 7 * 16 + 8, 20000, this));
 	}
 	
 	public Player getPlayer() {
