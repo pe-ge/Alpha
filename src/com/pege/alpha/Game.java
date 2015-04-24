@@ -153,8 +153,6 @@ public class Game extends Canvas implements Runnable {
 				break;
 			case 2: //client
 				Client.initClient(args[0], Integer.parseInt(args[1]));
-				Client.getClient().sendPosition(game.player);
-				Client.getClient().sendPosition(game.player);
 				break;
 		}
 	}

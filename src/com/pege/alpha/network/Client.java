@@ -18,8 +18,8 @@ public class Client {
 	private DatagramSocket socket;
 	private InetAddress ip;
 	private int port;
-	private Thread send;
 	
+	private final int INT_SIZE = Integer.SIZE / 8;
 	private final int DOUBLE_SIZE = Double.SIZE / 8;
 
 	public Client(String address, int port) {
@@ -34,7 +34,7 @@ public class Client {
 	}
 	
 	public void registerPlayer(Player p) {
-		
+		sendPosition(p);
 	}
 	
 	public String receive() {
@@ -53,14 +53,16 @@ public class Client {
 	
 	public void sendPosition(Entity e) {
 		byte[] entityType = e.getClass().toString().getBytes();
+		byte[] entityHash = toByteArray(e.hashCode());
 		byte[] xPos = toByteArray(e.getX());
 		byte[] yPos = toByteArray(e.getY());
-		byte dataLength = (byte)(entityType.length + xPos.length + yPos.length);
+		byte dataLength = (byte)(entityType.length + entityHash.length + xPos.length + yPos.length);
 		
 		byte[] dataToSend = new byte[dataLength + 1];
 		dataToSend[0] = dataLength;
 		int i = 1;
 		for (int j = 0; j < entityType.length; j++, i++) dataToSend[i] = entityType[j];
+		for (int j = 0; j < entityHash.length; j++, i++) dataToSend[i] = entityHash[j];
 		for (int j = 0; j < xPos.length; j++, i++) dataToSend[i] = xPos[j];
 		for (int j = 0; j < yPos.length; j++, i++) dataToSend[i] = yPos[j];
 		
@@ -71,14 +73,17 @@ public class Client {
 		return ByteBuffer.allocate(DOUBLE_SIZE).putDouble(number).array();
 	}
 	
+	private byte[] toByteArray(int number) {
+		return ByteBuffer.allocate(INT_SIZE).putInt(number).array();
+	}
+	
 	private void send(final byte[] data) {
-		send = new Thread("Send") {
+		Thread send = new Thread("Send") {
 			public void run() {
 				DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 				try {
 					socket.send(packet);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

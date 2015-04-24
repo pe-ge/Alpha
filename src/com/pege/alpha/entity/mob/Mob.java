@@ -21,10 +21,14 @@ public abstract class Mob extends Entity {
 	protected int time = 0;
 	protected int life = 100;
 	
+	public Mob(double x, double y) {
+		this.x = x;
+		this.y = y;
+		sprite = Sprites.playerDown[0]; 
+	}
+	
 	public Mob(TileCoordinate position) {
-		this.x = position.x();
-		this.y = position.y();
-		sprite = Sprites.playerDown[0];
+		this(position.x(), position.y());
 	}
 	
 	public void move(double dx, double dy) {
