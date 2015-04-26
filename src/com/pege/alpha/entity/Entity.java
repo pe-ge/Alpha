@@ -5,6 +5,7 @@ import java.util.Random;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.level.Level;
+import com.pege.alpha.network.Client;
 
 public abstract class Entity {
 	
@@ -14,9 +15,21 @@ public abstract class Entity {
 	protected Level level;
 	protected final Random random = new Random();
 	
+	protected boolean sendUpdate = true;
+	protected long lastUpdatedTime;
+	protected long updateRate = 200000000; //0.2sec
+	
 	public abstract void update();
 	
 	public abstract void render(Screen screen);
+	
+	protected void sendUpdateToServer() {
+		if (sendUpdate && System.nanoTime() - lastUpdatedTime > updateRate) {
+			Client.getClient().send(this);
+			sendUpdate = false;
+			lastUpdatedTime = System.nanoTime();
+		}
+	}
 	
 	public void setLevel(Level level) {
 		this.level = level;

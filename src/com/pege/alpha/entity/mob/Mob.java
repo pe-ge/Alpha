@@ -8,7 +8,7 @@ import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.graphics.Sprites;
 import com.pege.alpha.level.TileCoordinate;
 
-public abstract class Mob extends Entity {
+public class Mob extends Entity {
 		
 	public enum Direction {
 		UP, DOWN, LEFT, RIGHT
@@ -20,6 +20,7 @@ public abstract class Mob extends Entity {
 	protected int fireAllowed = 0;
 	protected int time = 0;
 	protected int life = 100;
+	protected double speed = 2.0;
 	
 	public Mob() {
 		this(0.0, 0.0);

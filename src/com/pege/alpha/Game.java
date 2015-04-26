@@ -144,7 +144,7 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		if (args.length != 1) {
+		if (args.length != 2) {
 			System.err.println("Usage: java Game [ip] [port]");
 			return;
 		}
@@ -152,6 +152,13 @@ public class Game extends Canvas implements Runnable {
 		String address = args[0];
 		int port = Integer.parseInt(args[1]);
 		Client.initClient(address, port);
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		    public void run() {
+		    	Client.getClient().disconnect();
+		    	Client.closeClient();
+		    }
+		}));
 		
 		Game game = new Game();
 		game.start();

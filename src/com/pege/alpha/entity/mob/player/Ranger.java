@@ -6,32 +6,23 @@ import com.pege.alpha.Game;
 import com.pege.alpha.input.Keyboard;
 import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.TileCoordinate;
-import com.pege.alpha.network.Client;
 
 public class Ranger extends Player {
-	
-	private double speed = 2;
-	private boolean sendUpdate = false;
 
 	public Ranger(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
 		super(position, keyboard, mouse);
+		
+		lastUpdatedTime = System.nanoTime();
+		sendUpdateToServer();
 	}
 	
 	public void update() {
 		super.update();
 		
-		sendUpdate = false;
-		
 		updateMovement();
 		updateShooting();
 		
-		sendUpdate();
-	}
-	
-	public void sendUpdate() {
-		if (sendUpdate) {
-			Client.getClient().send(this);
-		}
+		sendUpdateToServer();
 	}
 	
 	private void updateMovement() {
