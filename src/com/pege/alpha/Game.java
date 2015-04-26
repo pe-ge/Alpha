@@ -17,7 +17,6 @@ import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.level.TileCoordinate;
 import com.pege.alpha.network.Client;
-import com.pege.alpha.network.Server;
 
 public class Game extends Canvas implements Runnable {
 	
@@ -145,19 +144,16 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		switch (args.length) {
-			case 1: //server
-				int port = Integer.parseInt(args[0]);
-				Server.initServer(port);
-				break;
-			case 2: //client
-				String address = args[0];
-				port = Integer.parseInt(args[1]);
-				Client.initClient(address, port);
-				
-				Game game = new Game();
-				game.start();				
-				break;
+		if (args.length != 1) {
+			System.err.println("Usage: java Game [ip] [port]");
+			return;
 		}
+		
+		String address = args[0];
+		int port = Integer.parseInt(args[1]);
+		Client.initClient(address, port);
+		
+		Game game = new Game();
+		game.start();
 	}
 }
