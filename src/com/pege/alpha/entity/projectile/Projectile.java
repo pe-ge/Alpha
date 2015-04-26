@@ -18,6 +18,10 @@ public abstract class Projectile extends Entity {
 	
 	protected final Random random = new Random();
 	
+	public Projectile() {
+		
+	}
+	
 	public Projectile(Mob owner, double xOrigin, double yOrigin, double angle) {
 		this.owner = owner;
 		this.xOrigin = xOrigin;

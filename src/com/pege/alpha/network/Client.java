@@ -7,66 +7,67 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.pege.alpha.entity.Entity;
-import com.pege.alpha.entity.mob.player.Player;
+import com.pege.alpha.entity.mob.Mob;
+import com.pege.alpha.entity.network.NetworkPlayer;
+import com.pege.alpha.entity.network.NetworkProjectile;
+import com.pege.alpha.entity.projectile.Projectile;
+import com.pege.alpha.level.Level;
 
-public class Client {
+public class Client extends Thread {
 	
 	private static Client client;
 	
 	private DatagramSocket socket;
-	private InetAddress ip;
-	private int port;
+	private InetAddress serverAddress;
+	private int serverPort;
 	
 	private final int INT_SIZE = Integer.SIZE / 8;
 	private final int DOUBLE_SIZE = Double.SIZE / 8;
+	
+	private Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	private Level level;
 
-	public Client(String address, int port) {
-		this.port = port;
+	private Client(String serverAddress, int serverPort) {
+		super("Alpha Client");
+		
 		try {
 			this.socket = new DatagramSocket();
-			this.ip = InetAddress.getByName(address);
+			this.serverAddress = InetAddress.getByName(serverAddress);
+			this.serverPort = serverPort;
 		} catch (UnknownHostException | SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public void registerPlayer(Player p) {
-		sendPosition(p);
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 	
-	public String receive() {
-		byte[] data = new byte[1024];
-		DatagramPacket packet = new DatagramPacket(data, data.length);
-		
-		try {
-			socket.receive(packet);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void run() {
+		while (true) {
+			byte[] data = new byte[256];
+			
+			DatagramPacket packet = new DatagramPacket(data, data.length);
+			try {
+				socket.receive(packet);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			processPacket(packet);
 		}
-		
-		return new String(packet.getData());
+	}
+
+	private double toDouble(byte[] number) {
+		return ByteBuffer.wrap(number).asDoubleBuffer().get();
 	}
 	
-	public void sendPosition(Entity e) {
-		byte[] entityType = e.getClass().toString().getBytes();
-		byte[] entityHash = toByteArray(e.hashCode());
-		byte[] xPos = toByteArray(e.getX());
-		byte[] yPos = toByteArray(e.getY());
-		byte dataLength = (byte)(entityType.length + entityHash.length + xPos.length + yPos.length);
-		
-		byte[] dataToSend = new byte[dataLength + 1];
-		dataToSend[0] = dataLength;
-		int i = 1;
-		for (int j = 0; j < entityType.length; j++, i++) dataToSend[i] = entityType[j];
-		for (int j = 0; j < entityHash.length; j++, i++) dataToSend[i] = entityHash[j];
-		for (int j = 0; j < xPos.length; j++, i++) dataToSend[i] = xPos[j];
-		for (int j = 0; j < yPos.length; j++, i++) dataToSend[i] = yPos[j];
-		
-		send(dataToSend);
+	private int toInt(byte[] number) {
+		return ByteBuffer.wrap(number).asIntBuffer().get();
 	}
 	
 	private byte[] toByteArray(double number) {
@@ -77,10 +78,58 @@ public class Client {
 		return ByteBuffer.allocate(INT_SIZE).putInt(number).array();
 	}
 	
-	private void send(final byte[] data) {
-		Thread send = new Thread("Send") {
+	private void processPacket(final DatagramPacket packet) {
+		Thread processor = new Thread("Processor") {
 			public void run() {
-				DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
+				byte[] data = packet.getData();
+				
+				byte[] messageTypeData = new byte[INT_SIZE];
+				byte[] entityHashData = new byte[INT_SIZE];
+				byte[] xPosData = new byte[DOUBLE_SIZE];
+				byte[] yPosData = new byte[DOUBLE_SIZE];
+				
+				int i = 0;
+				for (int j = 0; j < messageTypeData.length; j++, i++) messageTypeData[j] = data[i];
+				for (int j = 0; j < entityHashData.length; j++, i++) entityHashData[j] = data[i];
+				for (int j = 0; j < xPosData.length; j++, i++) xPosData[j] = data[i];
+				for (int j = 0; j < yPosData.length; j++, i++) yPosData[j] = data[i];
+				
+				int messageType = toInt(messageTypeData);
+				int entityHash = toInt(entityHashData);
+				double xPos = toDouble(xPosData);
+				double yPos = toDouble(yPosData);
+				
+				processEntity(messageType, entityHash, xPos, yPos);
+			}
+		};
+		processor.start();
+	}
+	
+	private void processEntity(int messageType, int entityHash, double xPos, double yPos) {
+		if (entities.get(entityHash) == null) {
+			Entity e = createEntity(messageType);
+			level.addEntity(e);
+			
+			entities.put(entityHash, e);
+		}
+		
+		Entity e = entities.get(entityHash);
+		e.setX(xPos);
+		e.setY(yPos);
+	}
+	
+	private Entity createEntity(int entityType) {
+		if (entityType == MessageType.PLAYER_MOVE.ordinal()) return new NetworkPlayer();
+		if (entityType == MessageType.PLAYER_MOVE.ordinal()) return new NetworkProjectile();
+		
+		return null;
+	}
+	
+	public void send(final Entity e) {
+		Thread sender = new Thread("Sender") {
+			public void run() {
+				byte[] data = constructDataToSend(e);
+				DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
 				try {
 					socket.send(packet);
 				} catch (IOException e) {
@@ -88,12 +137,37 @@ public class Client {
 				}
 			}
 		};
-		send.start();
+		sender.start();
+	}
+	
+	private byte[] constructDataToSend(Entity e) {
+		byte[] messageTypeData = constructMessageTypeData(e);
+		byte[] entityHashData = toByteArray(e.hashCode());
+		byte[] xPosData = toByteArray(e.getX());
+		byte[] yPosData = toByteArray(e.getY());
+		
+		byte[] dataToSend = new byte[messageTypeData.length + entityHashData.length + xPosData.length + yPosData.length];
+		
+		int i = 0;
+		for (int j = 0; j < messageTypeData.length; j++, i++) dataToSend[i] = messageTypeData[j];
+		for (int j = 0; j < entityHashData.length; j++, i++) dataToSend[i] = entityHashData[j];
+		for (int j = 0; j < xPosData.length; j++, i++) dataToSend[i] = xPosData[j];
+		for (int j = 0; j < yPosData.length; j++, i++) dataToSend[i] = yPosData[j];
+		
+		return dataToSend;
+	}
+	
+	private byte[] constructMessageTypeData(Entity e) {
+		if (e instanceof Mob) return toByteArray(MessageType.PLAYER_MOVE.ordinal());
+		if (e instanceof Projectile) return toByteArray(MessageType.PROJECTILE_NEW.ordinal());
+		
+		throw new RuntimeException("Unknown type of network entity to be send: " + e.getClass());
 	}
 
-	public static void initClient(String address, int port) {
+	public static void initClient(String serverAddress, int serverPort) {
 		if (client == null) {
-			client = new Client(address, port);
+			client = new Client(serverAddress, serverPort);
+			client.start();
 		}
 	}
 	

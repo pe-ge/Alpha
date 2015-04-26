@@ -15,7 +15,5 @@ public abstract class Player extends Mob {
 		this.keyboard = keyboard;
 		this.mouse = mouse;
 	}
-	
-	
-	
+
 }

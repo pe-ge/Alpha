@@ -3,10 +3,13 @@ package com.pege.alpha.entity.projectile;
 import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.spawner.ParticleSpawner;
 import com.pege.alpha.graphics.Screen;
-import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.graphics.Sprites;
 
 public class BasicProjectile extends Projectile {
+	
+	public BasicProjectile() {
+		
+	}
 	
 	public BasicProjectile(Mob owner, double xOrigin, double yOrigin, double angle) {
 		super(owner, xOrigin, yOrigin, angle);

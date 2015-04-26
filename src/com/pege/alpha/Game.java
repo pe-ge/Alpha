@@ -37,6 +37,7 @@ public class Game extends Canvas implements Runnable {
 	private Mouse mouse;
 	private Level level;
 	private Player player;
+	
 	private boolean running = false;
 	
 	private Screen screen;
@@ -55,10 +56,19 @@ public class Game extends Canvas implements Runnable {
 		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
 		player = new Ranger(playerSpawn, keyboard, mouse);
 		level.addEntity(player);
+		Client.getClient().setLevel(level);
 		
 		addKeyListener(keyboard);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
+		
+		frame.setResizable(false);
+		frame.setTitle("Rain");
+		frame.add(this);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 	
 	public synchronized void start() {
@@ -135,24 +145,18 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Game game = new Game();
-		game.frame.setResizable(false);
-		game.frame.setTitle("Rain");
-		game.frame.add(game);
-		game.frame.pack();
-		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		game.frame.setLocationRelativeTo(null);
-		game.frame.setVisible(true);
-		
-		game.start();
 		switch (args.length) {
 			case 1: //server
 				int port = Integer.parseInt(args[0]);
 				Server.initServer(port);
-				Client.initClient("localhost", port);
 				break;
 			case 2: //client
-				Client.initClient(args[0], Integer.parseInt(args[1]));
+				String address = args[0];
+				port = Integer.parseInt(args[1]);
+				Client.initClient(address, port);
+				
+				Game game = new Game();
+				game.start();				
 				break;
 		}
 	}

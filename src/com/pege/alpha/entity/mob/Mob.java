@@ -21,6 +21,10 @@ public abstract class Mob extends Entity {
 	protected int time = 0;
 	protected int life = 100;
 	
+	public Mob() {
+		this(0.0, 0.0);
+	}
+	
 	public Mob(double x, double y) {
 		this.x = x;
 		this.y = y;

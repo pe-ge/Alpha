@@ -16,6 +16,7 @@ import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.level.tile.Tile;
+import com.pege.alpha.network.Client;
 
 public class Level {
 	
@@ -75,6 +76,10 @@ public class Level {
 		}
 		entities.addAll(entitiesToBeAdded);
 		entitiesToBeAdded.clear();
+	}
+	
+	public void notify(Entity e) {
+		Client.getClient().send(e);
 	}
 	
 	public void render(int xScroll, int yScroll, Screen screen) {
