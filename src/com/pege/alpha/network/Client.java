@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Mob;
+import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.level.Level;
@@ -23,10 +24,11 @@ public class Client extends Thread {
 	private DatagramSocket socket;
 	private InetAddress serverAddress;
 	private int serverPort;
+	private boolean running;
 	
 	private final int INT_SIZE = Integer.SIZE / 8;
 	private final int DOUBLE_SIZE = Double.SIZE / 8;
-	
+
 	private Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
 	private Level level;
 	
@@ -40,6 +42,7 @@ public class Client extends Thread {
 		} catch (UnknownHostException | SocketException e) {
 			e.printStackTrace();
 		}
+		running = true;
 	}
 	
 	public void setLevel(Level level) {
@@ -47,7 +50,7 @@ public class Client extends Thread {
 	}
 	
 	public void run() {
-		while (true) {
+		while (running) {
 			byte[] data = new byte[256];
 			
 			DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -83,28 +86,51 @@ public class Client extends Thread {
 				byte[] data = packet.getData();
 				
 				byte[] messageTypeData = new byte[INT_SIZE];
-				byte[] entityHashData = new byte[INT_SIZE];
-				byte[] xPosData = new byte[DOUBLE_SIZE];
-				byte[] yPosData = new byte[DOUBLE_SIZE];
-				
-				int i = 0;
-				for (int j = 0; j < messageTypeData.length; j++, i++) messageTypeData[j] = data[i];
-				for (int j = 0; j < entityHashData.length; j++, i++) entityHashData[j] = data[i];
-				for (int j = 0; j < xPosData.length; j++, i++) xPosData[j] = data[i];
-				for (int j = 0; j < yPosData.length; j++, i++) yPosData[j] = data[i];
-				
+				for (int i = 0; i < messageTypeData.length; i++) messageTypeData[i] = data[i];
 				int messageType = toInt(messageTypeData);
-				int entityHash = toInt(entityHashData);
-				double xPos = toDouble(xPosData);
-				double yPos = toDouble(yPosData);
 				
-				processReceivedEntity(messageType, entityHash, xPos, yPos);
+				if (messageType == MessageType.PLAYER_DISCONNECT.ordinal()) processDisconnectSignal(data);
+				if (messageType == MessageType.PLAYER_MOVE.ordinal()) processPlayerMove(data);
 			}
 		};
 		processor.start();
 	}
 	
-	private void processReceivedEntity(int messageType, int entityHash, double xPos, double yPos) {
+	private void processDisconnectSignal(byte[] data) {
+		byte[] messageTypeData = new byte[INT_SIZE];
+		byte[] entityHashData = new byte[INT_SIZE];
+		int i = 0;
+		for (int j = 0; j < messageTypeData.length; j++, i++) messageTypeData[j] = data[i];
+		for (int j = 0; j < entityHashData.length; j++, i++) entityHashData[j] = data[i];
+		
+		int entityHash = toInt(entityHashData);
+		entities.get(entityHash).remove();
+		entities.remove(entityHash);
+	}
+	
+	private void processPlayerMove(byte[] data) {
+		byte[] messageTypeData = new byte[INT_SIZE];
+		byte[] entityHashData = new byte[INT_SIZE];
+		byte[] xPosData = new byte[DOUBLE_SIZE];
+		byte[] yPosData = new byte[DOUBLE_SIZE];
+		
+		int i = 0;
+		for (int j = 0; j < messageTypeData.length; j++, i++) messageTypeData[j] = data[i];
+		for (int j = 0; j < entityHashData.length; j++, i++) entityHashData[j] = data[i];
+		for (int j = 0; j < xPosData.length; j++, i++) xPosData[j] = data[i];
+		for (int j = 0; j < yPosData.length; j++, i++) yPosData[j] = data[i];
+		
+		int messageType = toInt(messageTypeData);
+		int entityHash = toInt(entityHashData);
+		double xPos = toDouble(xPosData);
+		double yPos = toDouble(yPosData);
+
+		Entity e = getEntity(messageType, entityHash);
+		e.setX(xPos);
+		e.setY(yPos);
+	}
+	
+	private Entity getEntity(int messageType, int entityHash) {
 		if (entities.get(entityHash) == null) {
 			Entity e = createEntity(messageType);
 			level.addEntity(e);
@@ -112,9 +138,7 @@ public class Client extends Thread {
 			entities.put(entityHash, e);
 		}
 		
-		Entity e = entities.get(entityHash);
-		e.setX(xPos);
-		e.setY(yPos);
+		return entities.get(entityHash);
 	}
 	
 	private Entity createEntity(int entityType) {
@@ -140,23 +164,28 @@ public class Client extends Thread {
 	}
 	
 	public void disconnect() {
-		Thread disconnecter = new Thread("Disconnecter") {
-			public void run() {
-				byte[] data = toByteArray(MessageType.PLAYER_DISCONNECT.ordinal());
-				DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
-				try {
-					socket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		disconnecter.start();
+		running = false;
+		
+		byte[] messageTypeData = toByteArray(MessageType.PLAYER_DISCONNECT.ordinal());
+		byte[] entityHashData = toByteArray(level.getPlayer().hashCode());
+		
+		byte[] dataToSend = new byte[messageTypeData.length + entityHashData.length];
+		
+		int i = 0;
+		for (int j = 0; j < messageTypeData.length; j++, i++) dataToSend[i] = messageTypeData[j];
+		for (int j = 0; j < entityHashData.length; j++, i++) dataToSend[i] = entityHashData[j];
+		
+		DatagramPacket packet = new DatagramPacket(dataToSend, dataToSend.length, serverAddress, serverPort);
+		try {
+			socket.send(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	
 	private byte[] constructDataToSend(Entity e) {
-		byte[] messageTypeData = constructMessageTypeData(e);
+		byte[] messageTypeData = createMessageType(e);
 		byte[] entityHashData = toByteArray(e.hashCode());
 		byte[] xPosData = toByteArray(e.getX());
 		byte[] yPosData = toByteArray(e.getY());
@@ -175,8 +204,8 @@ public class Client extends Thread {
 		return dataToSend;
 	}
 	
-	private byte[] constructMessageTypeData(Entity e) {
-		if (e instanceof Mob) return toByteArray(MessageType.PLAYER_MOVE.ordinal());
+	private byte[] createMessageType(Entity e) {
+		if (e instanceof Player) return toByteArray(MessageType.PLAYER_MOVE.ordinal());
 		if (e instanceof Projectile) return toByteArray(MessageType.PROJECTILE_NEW.ordinal());
 		
 		throw new RuntimeException("Unknown type of network entity to be send: " + e.getClass());
@@ -191,10 +220,6 @@ public class Client extends Thread {
 	
 	public static Client getClient() {
 		return client;
-	}
-	
-	public static void closeClient() {
-		client.socket.close();
 	}
 	
 }

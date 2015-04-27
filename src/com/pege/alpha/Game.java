@@ -156,7 +156,6 @@ public class Game extends Canvas implements Runnable {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		    public void run() {
 		    	Client.getClient().disconnect();
-		    	Client.closeClient();
 		    }
 		}));
 		

@@ -46,7 +46,7 @@ public class Level {
 		return player;
 	}
 
-	protected void loadLevel(String path) {
+	private void loadLevel(String path) {
 		try {
 			BufferedImage image = ImageIO.read(Level.class.getResource(path));
 			width = image.getWidth();
@@ -71,15 +71,12 @@ public class Level {
 			Entity e = iterator.next();
 			e.update();
 			if (e.removed()) {
-				iterator.remove();
+				iterator.remove(); //removes only from entities list
+				removeEntity(e); //removes from all others lists
 			}
 		}
 		entities.addAll(entitiesToBeAdded);
 		entitiesToBeAdded.clear();
-	}
-	
-	public void notify(Entity e) {
-		Client.getClient().send(e);
 	}
 	
 	public void render(int xScroll, int yScroll, Screen screen) {
@@ -104,6 +101,10 @@ public class Level {
 		e.setLevel(this);
 		entitiesToBeAdded.add(e);
 		if (e instanceof Mob) mobs.add((Mob)e);
+	}
+	
+	private void removeEntity(Entity e) {
+		if (e instanceof Mob) mobs.remove(e);
 	}
 	
 	public Tile getTile(int x, int y) {
