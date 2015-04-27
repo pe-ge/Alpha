@@ -17,7 +17,7 @@ public abstract class Entity {
 	
 	protected boolean sendUpdate = true;
 	protected long lastUpdatedTime;
-	protected long updateRate = 200000000; //0.2sec
+	protected long updateRate = 1000000000; //0.2sec
 	
 	public abstract void update();
 	

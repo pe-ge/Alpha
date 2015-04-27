@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pege.alpha.entity.Entity;
-import com.pege.alpha.entity.mob.Mob;
+import com.pege.alpha.entity.mob.network.NetworkRanger;
 import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
@@ -125,9 +125,9 @@ public class Client extends Thread {
 		double xPos = toDouble(xPosData);
 		double yPos = toDouble(yPosData);
 
-		Entity e = getEntity(messageType, entityHash);
-		e.setX(xPos);
-		e.setY(yPos);
+		NetworkRanger networkPlayer = (NetworkRanger)getEntity(messageType, entityHash);
+		networkPlayer.setX(xPos);
+		networkPlayer.setY(yPos);
 	}
 	
 	private Entity getEntity(int messageType, int entityHash) {
@@ -142,7 +142,7 @@ public class Client extends Thread {
 	}
 	
 	private Entity createEntity(int entityType) {
-		if (entityType == MessageType.PLAYER_MOVE.ordinal()) return new Mob();
+		if (entityType == MessageType.PLAYER_MOVE.ordinal()) return new NetworkRanger();
 		if (entityType == MessageType.PROJECTILE_NEW.ordinal()) return new BasicProjectile();
 		
 		return null;
