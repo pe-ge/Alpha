@@ -9,7 +9,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.pege.alpha.entity.Entity;
-import com.pege.alpha.entity.mob.Dummy;
 import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.entity.projectile.Projectile;
@@ -27,26 +26,11 @@ public class Level {
 	private List<Entity> entitiesToBeAdded = new ArrayList<Entity>();
 	private List<Mob> mobs = new ArrayList<Mob>();
 	private Player player;
+	private Client client;
 	
 	public static Level spawn = new Level("/levels/level1.png");
 	
 	public Level(String path) {
-		loadLevel(path);
-	}
-	
-	public Player getPlayer() {
-		if (player == null) {
-			for (Mob e : mobs) {
-				if (e instanceof Player) {
-					player = (Player)e;
-					break;
-				}
-			}
-		}
-		return player;
-	}
-
-	private void loadLevel(String path) {
 		try {
 			BufferedImage image = ImageIO.read(Level.class.getResource(path));
 			width = image.getWidth();
@@ -66,6 +50,26 @@ public class Level {
 		}
 	}
 	
+	public void setClient(Client client) {
+		this.client = client;
+	}
+	
+	public Client getClient() {
+		return client;
+	}
+	
+	public Player getPlayer() {
+		if (player == null) {
+			for (Mob e : mobs) {
+				if (e instanceof Player) {
+					player = (Player)e;
+					break;
+				}
+			}
+		}
+		return player;
+	}
+
 	public void update() {
 		for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext();) {
 			Entity e = iterator.next();

@@ -3,7 +3,6 @@ package com.pege.alpha.entity.particle;
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
-import com.pege.alpha.graphics.Sprites;
 
 public class Particle extends Entity {
 

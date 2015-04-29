@@ -34,4 +34,29 @@ public abstract class Projectile extends Entity {
 	public Mob getOwner() {
 		return owner;
 	}
+	
+	public void setOwner(Mob owner) {
+		this.owner = owner;
+	}
+	
+	public void setX(double x) {
+		this.x = x;
+		this.xOrigin = x;
+	}
+	
+	public void setY(double y) {
+		this.y = y;
+		this.yOrigin = y;
+	}
+	
+	public double getAngle() {
+		return angle;
+	}
+	
+	public void setAngle(double angle) {
+		this.angle = angle;
+		this.dx = speed * Math.cos(angle);
+		this.dy = speed * Math.sin(angle);
+		this.dd = Math.sqrt(dx * dx + dy * dy);
+	}
 }

@@ -36,6 +36,7 @@ public class Game extends Canvas implements Runnable {
 	private Mouse mouse;
 	private Level level;
 	private Player player;
+	private Client client;
 	
 	private boolean running = false;
 	
@@ -43,7 +44,7 @@ public class Game extends Canvas implements Runnable {
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB); //final view
 	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 	
-	public Game() {
+	public Game(String address, int port) {
 		Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
 		setPreferredSize(size);
 		
@@ -55,7 +56,15 @@ public class Game extends Canvas implements Runnable {
 		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
 		player = new Ranger(playerSpawn, keyboard, mouse);
 		level.addEntity(player);
-		Client.getClient().setLevel(level);
+		
+		client = new Client(address, port);
+		client.setLevel(level);
+		level.setClient(client);
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		    public void run() {
+		    	client.disconnect();
+		    }
+		}));
 		
 		addKeyListener(keyboard);
 		addMouseListener(mouse);
@@ -74,6 +83,7 @@ public class Game extends Canvas implements Runnable {
 		running = true;
 		mainThread = new Thread(this, "Display");
 		mainThread.start();
+		client.start();
 	}
 	
 	public synchronized void stop() {
@@ -151,15 +161,8 @@ public class Game extends Canvas implements Runnable {
 		
 		String address = args[0];
 		int port = Integer.parseInt(args[1]);
-		Client.initClient(address, port);
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-		    public void run() {
-		    	Client.getClient().disconnect();
-		    }
-		}));
-		
-		Game game = new Game();
+
+		Game game = new Game(address, port);
 		game.start();
 	}
 }
