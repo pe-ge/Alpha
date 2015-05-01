@@ -11,9 +11,6 @@ public class Ranger extends Player {
 
 	public Ranger(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
 		super(position, keyboard, mouse);
-		
-		lastUpdatedTime = System.nanoTime();
-		sendUpdateToServer();
 	}
 	
 	public void update() {
@@ -21,8 +18,6 @@ public class Ranger extends Player {
 		
 		updateMovement();
 		updateShooting();
-		
-		sendUpdateToServer();
 	}
 	
 	private void updateMovement() {
@@ -34,11 +29,7 @@ public class Ranger extends Player {
 		
 		if (dx != 0 || dy != 0) {
 			walking = true;
-			
-			double oldX = x;
-			double oldY = y;
 			move(dx, dy);
-			if (x != oldX || y != oldY) sendUpdate = true;
 		} else {
 			walking = false;
 		}

@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.player.Player;
-import com.pege.alpha.entity.projectile.Projectile;
+import com.pege.alpha.entity.projectile.BasicProjectile;
 
 public class MessageConstructor {
 	
@@ -13,14 +13,14 @@ public class MessageConstructor {
 
 	public byte[] constructMessage(Entity e) {
 		if (e instanceof Player) return constructPlayerMove((Player)e);
-		if (e instanceof Projectile) return constructProjectileNew((Projectile)e);
+		if (e instanceof BasicProjectile) return constructProjectileNew((BasicProjectile)e);
 		
 		throw new RuntimeException("Entity is not supported on network game.");
 	}
 	
 	private byte[] constructMessageType(Entity e) {
 		if (e instanceof Player) return toByteArray(MessageType.PLAYER_MOVE.ordinal());
-		if (e instanceof Projectile) return toByteArray(MessageType.PROJECTILE_NEW.ordinal());
+		if (e instanceof BasicProjectile) return toByteArray(MessageType.PROJECTILE_NEW.ordinal());
 		
 		throw new RuntimeException("Unknown type of network entity to be send: " + e.getClass());
 	}
@@ -42,7 +42,7 @@ public class MessageConstructor {
 		return message;
 	}
 	
-	private byte[] constructProjectileNew(Projectile projectile) {
+	private byte[] constructProjectileNew(BasicProjectile projectile) {
 		byte[] messageType = constructMessageType(projectile);
 		byte[] projectileHash = toByteArray(projectile.hashCode());
 		byte[] ownerHash = toByteArray(projectile.getOwner().hashCode());

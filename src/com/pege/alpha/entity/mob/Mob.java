@@ -16,7 +16,7 @@ public class Mob extends Entity {
 	
 	protected Direction direction = Direction.DOWN;
 	protected boolean walking = false;
-	protected int fireRate = 0;
+	protected int fireRate = 20;
 	protected int fireAllowed = 0;
 	protected int time = 0;
 	protected int life = 100;

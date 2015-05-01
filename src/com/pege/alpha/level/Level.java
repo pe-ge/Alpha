@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.mob.player.Player;
+import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
@@ -79,8 +80,13 @@ public class Level {
 				removeEntity(e); //removes from all others lists
 			}
 		}
+		
 		entities.addAll(entitiesToBeAdded);
 		entitiesToBeAdded.clear();
+		
+		if (getPlayer() != null) {
+			send(player);
+		}
 	}
 	
 	public void render(int xScroll, int yScroll, Screen screen) {
@@ -105,11 +111,29 @@ public class Level {
 		e.setLevel(this);
 		entitiesToBeAdded.add(e);
 		if (e instanceof Mob) mobs.add((Mob)e);
+		
+		send(e);
 	}
 	
 	private void removeEntity(Entity e) {
 		if (e instanceof Mob) mobs.remove(e);
 	}
+	
+	private void send(Player p) {
+		long time = System.nanoTime();
+		if (time - lastUpdatedTime > updateRate) {
+			client.send(p);
+			lastUpdatedTime = time;
+		}
+	}
+	
+	private void send(Entity e) {
+		if (e instanceof Player) client.send(e);
+		if (e instanceof BasicProjectile) client.send(e);
+	}
+	
+	protected long lastUpdatedTime = System.nanoTime();
+	protected long updateRate = 200000000; //0.2sec
 	
 	public Tile getTile(int x, int y) {
 		if (x < 0 || x >= width || y < 0 || y >= height) return Tile.voidTile;

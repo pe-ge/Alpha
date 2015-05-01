@@ -4,8 +4,8 @@ import java.util.Map;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Mob;
+import com.pege.alpha.entity.mob.network.NetworkProjectile;
 import com.pege.alpha.entity.mob.network.NetworkRanger;
-import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.network.message.Message;
 import com.pege.alpha.network.message.MessageDisconnect;
@@ -45,7 +45,7 @@ public class MessageProcessor {
 	}
 
 	private void processProjectileNew(MessageProjectileNew message) {
-		BasicProjectile projectile = (BasicProjectile)findEntity(message);
+		NetworkProjectile projectile = (NetworkProjectile)findEntity(message);
 		projectile.setOwner((Mob)entities.get(message.ownerHash));
 		projectile.setX(message.x);
 		projectile.setY(message.y);
@@ -65,7 +65,7 @@ public class MessageProcessor {
 	
 	private Entity createEntity(Message message) {
 		if (message instanceof MessagePlayerMove) return new NetworkRanger();
-		if (message instanceof MessageProjectileNew) return new BasicProjectile();
+		if (message instanceof MessageProjectileNew) return new NetworkProjectile();
 		
 		return null;
 	}

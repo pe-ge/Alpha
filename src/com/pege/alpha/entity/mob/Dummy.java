@@ -1,5 +1,7 @@
 package com.pege.alpha.entity.mob;
 
+import java.util.Random;
+
 import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.level.TileCoordinate;
 
@@ -8,6 +10,7 @@ public class Dummy extends Mob {
 	private double xa = 0;
 	private double ya = 0;
 	private int radius;
+	private Random random = new Random();
 	
 	private Player player;
 

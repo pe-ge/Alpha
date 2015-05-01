@@ -1,5 +1,7 @@
 package com.pege.alpha.entity.particle;
 
+import java.util.Random;
+
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
@@ -8,8 +10,9 @@ public class Particle extends Entity {
 
 	private int life;
 	
-	protected double x, y, z;
-	protected double dx, dy, dz;
+	private double z;
+	private double dx, dy, dz;
+	private final Random random = new Random();
 	
 	public Particle(Sprite sprite, double x, double y, int life) {
 		this.x = x;

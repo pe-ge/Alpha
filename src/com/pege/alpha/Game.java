@@ -55,11 +55,10 @@ public class Game extends Canvas implements Runnable {
 		level = Level.spawn;
 		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
 		player = new Ranger(playerSpawn, keyboard, mouse);
-		level.addEntity(player);
-		
 		client = new Client(address, port);
 		client.setLevel(level);
 		level.setClient(client);
+		level.addEntity(player);
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		    public void run() {
 		    	client.disconnect();
