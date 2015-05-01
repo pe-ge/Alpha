@@ -4,9 +4,9 @@ import java.util.Map;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Mob;
-import com.pege.alpha.entity.mob.network.NetworkProjectile;
-import com.pege.alpha.entity.mob.network.NetworkRanger;
 import com.pege.alpha.level.Level;
+import com.pege.alpha.network.entity.NetworkProjectile;
+import com.pege.alpha.network.entity.NetworkRanger;
 import com.pege.alpha.network.message.Message;
 import com.pege.alpha.network.message.MessageDisconnect;
 import com.pege.alpha.network.message.MessagePlayerMove;

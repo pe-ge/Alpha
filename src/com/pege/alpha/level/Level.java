@@ -163,9 +163,9 @@ public class Level {
 		return solid;
 	}
 	
-	public Mob collisionMobParticle(Projectile p, double dx, double dy) {
+	public Mob collisionMobProjectile(Projectile p, double dx, double dy) {
 		for (Mob m : mobs) {
-			if (collisionMobParticle(m, p, dx, dy)) {
+			if (collisionMobProjectile(m, p, dx, dy)) {
 				return m;
 			}
 		}
@@ -173,7 +173,7 @@ public class Level {
 		return null;
 	}
 	
-	private boolean collisionMobParticle(Mob m, Projectile p, double dx, double dy) {
+	private boolean collisionMobProjectile(Mob m, Projectile p, double dx, double dy) {
 		if (m.getSprite() == null || p.getSprite() == null || p.getOwner() == m) {
 			return false;
 		}

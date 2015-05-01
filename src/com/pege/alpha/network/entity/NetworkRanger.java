@@ -1,4 +1,4 @@
-package com.pege.alpha.entity.mob.network;
+package com.pege.alpha.network.entity;
 
 import com.pege.alpha.entity.mob.Mob;
 

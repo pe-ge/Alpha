@@ -8,27 +8,20 @@ import com.pege.alpha.entity.spawner.ParticleSpawner;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprites;
 
-public class Projectile extends Entity {
+public abstract class Projectile extends Entity {
 	
-	protected Mob owner; //owner of projectile
+	protected Mob owner;
 	protected double angle;
-	protected double xOrigin, yOrigin;
 	protected double speed;
-	protected double dx, dy;
-	protected int range, damage;
+	protected double range, damage;
 	protected double distance;
-	protected double dd;
+	
+	protected double dx, dy, dd;
 	
 	protected final Random random = new Random();
 	
-	public Projectile() {
-		
-	}
-	
 	public Projectile(Mob owner, double xOrigin, double yOrigin, double angle) {
 		this.owner = owner;
-		this.xOrigin = xOrigin;
-		this.yOrigin = yOrigin;
 		this.x = xOrigin;
 		this.y = yOrigin;
 		this.angle = angle;
@@ -52,20 +45,20 @@ public class Projectile extends Entity {
 	}
 	
 	protected void move() {
-		boolean collisionEntityTile = level.collisionEntityTile(this, dx, dy);
-		Mob collisionMobParticle = level.collisionMobParticle(this, dx, dy);
+		boolean collisionTile = level.collisionEntityTile(this, dx, dy);
+		Mob collisionMob = level.collisionMobProjectile(this, dx, dy);
 		
-		if (!collisionEntityTile && collisionMobParticle == null) {
+		if (!collisionTile && collisionMob == null) {
 			x += dx;
 			y += dy;
 			distance += dd;
 		} else {
-			if (collisionEntityTile) {
+			if (collisionTile) {
 				level.addEntity(new ParticleSpawner(Sprites.blackParticle, (int)x + 4, (int)y + 1, 20, 50, level));
 			}
-			if (collisionMobParticle != null) {
-				int mobX = (int)collisionMobParticle.getX();
-				int mobY = (int)collisionMobParticle.getY();
+			if (collisionMob != null) {
+				int mobX = (int)collisionMob.getX();
+				int mobY = (int)collisionMob.getY();
 				level.addEntity(new ParticleSpawner(Sprites.redParticle, mobX, mobY, 20, 200, level));
 			}
 			

@@ -1,4 +1,4 @@
-package com.pege.alpha.entity.mob.network;
+package com.pege.alpha.network.entity;
 
 import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.projectile.Projectile;
@@ -25,16 +25,6 @@ public class NetworkProjectile extends Projectile {
 	
 	public void setOwner(Mob owner) {
 		this.owner = owner;
-	}
-	
-	public void setX(double x) {
-		this.x = x;
-		this.xOrigin = x;
-	}
-	
-	public void setY(double y) {
-		this.y = y;
-		this.yOrigin = y;
 	}
 	
 	public void setAngle(double angle) {

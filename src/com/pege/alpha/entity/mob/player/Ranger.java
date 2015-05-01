@@ -15,7 +15,6 @@ public class Ranger extends Player {
 	
 	public void update() {
 		super.update();
-		
 		updateMovement();
 		updateShooting();
 	}

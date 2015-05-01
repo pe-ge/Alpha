@@ -5,10 +5,6 @@ import com.pege.alpha.graphics.Sprites;
 
 public class BasicProjectile extends Projectile {
 	
-	public BasicProjectile() {
-		this(null, 0.0, 0.0, 0.0);
-	}
-	
 	public BasicProjectile(Mob owner, double xOrigin, double yOrigin, double angle) {
 		super(owner, xOrigin, yOrigin, angle);
 		this.speed = 5;
