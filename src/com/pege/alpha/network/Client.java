@@ -6,10 +6,13 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.pege.alpha.entity.Entity;
+import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.network.message.Message;
 
@@ -26,6 +29,9 @@ public class Client extends Thread {
 	
 	private Map<Integer, Entity> networkEntities = new HashMap<Integer, Entity>();
 	private Level level;
+	
+	private long lastUpdatedTime = System.nanoTime();
+	private long updateRate = 200000000; //0.2sec
 	
 	public Client(String serverAddress, int serverPort) {
 		super("Alpha Client");
@@ -74,30 +80,54 @@ public class Client extends Thread {
 		processor.start();
 	}
 	
-	public void send(final Entity e) {
+	public void sendEntities() {
+		final List<Entity> entitiesToSend = new ArrayList<Entity>(level.getEntitiesToSend());
+		level.getEntitiesToSend().clear();
 		Thread sender = new Thread("Sender") {
 			public void run() {
-				byte[] data = messageConstructor.constructMessage(e);
-				DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
-				try {
-					socket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
+				for (Entity e : entitiesToSend) {
+					send(e);
 				}
 			}
 		};
 		sender.start();
 	}
 	
-	public void disconnect() {
-		running = false;
-		byte[] message = messageConstructor.constructDisconnectMessage(level.getPlayer());
-		DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, serverPort);
+	private void send(Entity e) {
+		if (e instanceof Player) {
+			sendPlayer((Player)e);
+			return;
+		}
+		
+		sendEntity(e);
+	}
+	
+	private void sendEntity(Entity e) {
+		byte[] message = messageConstructor.constructMessage(e);
+		send(message);
+	}
+	
+	private void sendPlayer(Player p) {
+		long time = System.nanoTime();
+		if (time - lastUpdatedTime > updateRate) {
+			sendEntity(p);
+			lastUpdatedTime = time;
+		}
+	}
+	
+	private void send(byte[] data) {
+		DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
 		try {
 			socket.send(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void disconnect(Player player) {
+		running = false;
+		byte[] message = messageConstructor.constructDisconnectMessage(player);
+		send(message);
 	}
 
 }

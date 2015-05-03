@@ -4,15 +4,17 @@ import com.pege.alpha.entity.mob.Mob;
 
 public class NetworkRanger extends Mob {
 	
-	private double receivedX;
-	private double receivedY;
+	private double moveX;
+	private double moveY;
 	
-	public void setX(double x) {
-		receivedX = x;
-	}
+	//distance between actual and received position
+	//when the distance is higher than this value, players position
+	//will be set manually, instead of moving to received position
+	private final double skipDistance = 100.0;
 	
-	public void setY(double y) {
-		receivedY = y;
+	public void moveXY(double x, double y) {
+		moveX = x;
+		moveY = y;
 	}
 	
 	public void update() {
@@ -21,14 +23,17 @@ public class NetworkRanger extends Mob {
 	}
 
 	private void updateMovement() {
-		if (receivedX != x || receivedY != y) {
-			walking = true;
-			
-			double dx = speed * signum(receivedX - x);
-			double dy = speed * signum(receivedY - y);
-			move(dx, dy);
+		if (Math.abs(moveX - x) + Math.abs(moveY - y) < skipDistance) {
+			double dx = speed * signum(moveX - x);
+			double dy = speed * signum(moveY - y);
+			if (dx != 0 || dy != 0) {
+				walking = true;
+				move(dx, dy);
+			} else {
+				walking = false;
+			}
 		} else {
-			walking = false;
+			setXY(moveX, moveY);
 		}
 	}
 }

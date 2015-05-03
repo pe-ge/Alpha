@@ -65,13 +65,13 @@ public class MessageConstructor {
 	
 	public byte[] constructDisconnectMessage(Player player) {
 		byte[] messageType = toByteArray(MessageType.PLAYER_DISCONNECT.ordinal());
-		byte[] entityHash = toByteArray(player.hashCode());
+		byte[] playerHash = toByteArray(player.hashCode());
 		
-		byte[] message = new byte[messageType.length + entityHash.length];
+		byte[] message = new byte[messageType.length + playerHash.length];
 		
 		int i = 0;
 		for (int j = 0; j < messageType.length; j++, i++) message[i] = messageType[j];
-		for (int j = 0; j < entityHash.length; j++, i++) message[i] = entityHash[j];
+		for (int j = 0; j < playerHash.length; j++, i++) message[i] = playerHash[j];
 		
 		return message;
 	}

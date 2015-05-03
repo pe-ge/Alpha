@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -16,7 +17,6 @@ import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.level.tile.Tile;
-import com.pege.alpha.network.Client;
 
 public class Level {
 	
@@ -27,8 +27,8 @@ public class Level {
 	private List<Entity> entitiesToBeAdded = new ArrayList<Entity>();
 	private List<Mob> mobs = new ArrayList<Mob>();
 	private Player player;
-	private Client client;
-	
+	private List<Entity> entitiesToSend = new LinkedList<Entity>();
+
 	public static Level spawn = new Level("/levels/level1.png");
 	
 	public Level(String path) {
@@ -50,33 +50,13 @@ public class Level {
 			}
 		}
 	}
-	
-	public void setClient(Client client) {
-		this.client = client;
-	}
-	
-	public Client getClient() {
-		return client;
-	}
-	
-	public Player getPlayer() {
-		if (player == null) {
-			for (Mob e : mobs) {
-				if (e instanceof Player) {
-					player = (Player)e;
-					break;
-				}
-			}
-		}
-		return player;
-	}
 
 	public void update() {
 		for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext();) {
 			Entity e = iterator.next();
 			e.update();
 			if (e.removed()) {
-				iterator.remove(); //removes only from entities list
+				iterator.remove(); //removes from entities list
 				removeEntity(e); //removes from all others lists
 			}
 		}
@@ -84,9 +64,7 @@ public class Level {
 		entities.addAll(entitiesToBeAdded);
 		entitiesToBeAdded.clear();
 		
-		if (getPlayer() != null) {
-			send(player);
-		}
+		entitiesToSend.add(getPlayer());
 	}
 	
 	public void render(int xScroll, int yScroll, Screen screen) {
@@ -107,33 +85,33 @@ public class Level {
 		}
 	}
 	
+	public Player getPlayer() {
+		if (player == null) {
+			for (Mob e : mobs) {
+				if (e instanceof Player) {
+					player = (Player)e;
+					break;
+				}
+			}
+		}
+		return player;
+	}
+	
+	public List<Entity> getEntitiesToSend() {
+		return entitiesToSend;
+	}
+	
 	public void addEntity(Entity e) {
 		e.setLevel(this);
 		entitiesToBeAdded.add(e);
 		if (e instanceof Mob) mobs.add((Mob)e);
 		
-		send(e);
+		if (e instanceof BasicProjectile) entitiesToSend.add(e);
 	}
 	
 	private void removeEntity(Entity e) {
 		if (e instanceof Mob) mobs.remove(e);
 	}
-	
-	private void send(Player p) {
-		long time = System.nanoTime();
-		if (time - lastUpdatedTime > updateRate) {
-			client.send(p);
-			lastUpdatedTime = time;
-		}
-	}
-	
-	private void send(Entity e) {
-		if (e instanceof Player) client.send(e);
-		if (e instanceof BasicProjectile) client.send(e);
-	}
-	
-	protected long lastUpdatedTime = System.nanoTime();
-	protected long updateRate = 200000000; //0.2sec
 	
 	public Tile getTile(int x, int y) {
 		if (x < 0 || x >= width || y < 0 || y >= height) return Tile.voidTile;

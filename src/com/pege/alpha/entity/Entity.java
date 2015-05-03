@@ -39,11 +39,8 @@ public abstract class Entity {
 		return y;
 	}
 	
-	public void setX(double x) {
+	public void setXY(double x, double y) {
 		this.x = x;
-	}
-	
-	public void setY(double y) {
 		this.y = y;
 	}
 }

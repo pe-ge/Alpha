@@ -37,18 +37,16 @@ public class MessageProcessor {
 		e.remove();
 		entities.remove(entityHash);
 	}
-	
+
 	private void processPlayerMove(MessagePlayerMove message) {
 		NetworkRanger networkRanger = (NetworkRanger)findEntity(message);
-		networkRanger.setX(message.x);
-		networkRanger.setY(message.y);
+		networkRanger.moveXY(message.x, message. y);
 	}
 
 	private void processProjectileNew(MessageProjectileNew message) {
 		NetworkProjectile projectile = (NetworkProjectile)findEntity(message);
 		projectile.setOwner((Mob)entities.get(message.ownerHash));
-		projectile.setX(message.x);
-		projectile.setY(message.y);
+		projectile.setXY(message.x, message. y);
 		projectile.setAngle(message.angle);
 	}
 	

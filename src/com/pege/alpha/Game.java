@@ -18,7 +18,7 @@ import com.pege.alpha.level.Level;
 import com.pege.alpha.level.TileCoordinate;
 import com.pege.alpha.network.Client;
 
-public class Game extends Canvas implements Runnable {
+public class Game extends Canvas {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -30,7 +30,6 @@ public class Game extends Canvas implements Runnable {
 	
 	public static String title = "Alpha";
 	
-	private Thread mainThread;
 	private JFrame frame;
 	private Keyboard keyboard;
 	private Mouse mouse;
@@ -57,11 +56,12 @@ public class Game extends Canvas implements Runnable {
 		player = new Ranger(playerSpawn, keyboard, mouse);
 		client = new Client(address, port);
 		client.setLevel(level);
-		level.setClient(client);
+		
 		level.addEntity(player);
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		    public void run() {
-		    	client.disconnect();
+		    	running = false;
+		    	client.disconnect(player);
 		    }
 		}));
 		
@@ -80,22 +80,11 @@ public class Game extends Canvas implements Runnable {
 	
 	public synchronized void start() {
 		running = true;
-		mainThread = new Thread(this, "Display");
-		mainThread.start();
 		client.start();
-	}
-	
-	public synchronized void stop() {
-		running = false;
-		try {
-			mainThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		run();
 	}
 
-	@Override
-	public void run() {
+	private void run() {
 		long lastTime = System.nanoTime();
 		long timer = System.currentTimeMillis();
 		final double ns = 1000000000.0 / 60.0;
@@ -122,12 +111,12 @@ public class Game extends Canvas implements Runnable {
 				frames = 0;
 			}
 		}
-		stop();
 	}
 
 	private void update() {
 		keyboard.update();
 		level.update();
+		client.sendEntities();
 	}
 	
 	private void render() {
