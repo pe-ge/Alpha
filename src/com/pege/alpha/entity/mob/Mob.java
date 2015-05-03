@@ -5,7 +5,7 @@ import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
-import com.pege.alpha.graphics.Sprites;
+import com.pege.alpha.graphics.spritesheets.Goku;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Mob extends Entity {
@@ -29,7 +29,7 @@ public class Mob extends Entity {
 	public Mob(double x, double y) {
 		this.x = x;
 		this.y = y;
-		sprite = Sprites.playerDown[0]; 
+		sprite = Goku.standingDown[0]; 
 	}
 	
 	public Mob(TileCoordinate position) {
@@ -99,10 +99,10 @@ public class Mob extends Entity {
 	}
 	
 	private void setSprite() {
-		if (direction == Direction.UP) setSprite(Sprites.playerUp);
-		if (direction == Direction.DOWN) setSprite(Sprites.playerDown);
-		if (direction == Direction.LEFT) setSprite(Sprites.playerLeft);
-		if (direction == Direction.RIGHT) setSprite(Sprites.playerRight);
+		if (direction == Direction.UP) setSprite(Goku.standingUp);
+		if (direction == Direction.DOWN) setSprite(Goku.standingDown);
+		if (direction == Direction.LEFT) setSprite(Goku.standingLeft);
+		if (direction == Direction.RIGHT) setSprite(Goku.standingRight);
 	}
 	
 	private void setSprite(Sprite[] sprites) {

@@ -11,7 +11,6 @@ public class Sprite {
 	
 	private SpriteSheet spriteSheet;
 	
-	
 	public Sprite(int spriteSize, int x, int y, SpriteSheet spriteSheet) {
 		this.SPRITE_SIZE = spriteSize;
 		this.pixels = new int[SPRITE_SIZE * SPRITE_SIZE];
@@ -33,6 +32,21 @@ public class Sprite {
 		this.xOffset = 0;
 		this.yOffset = 0;
 		setColour(colour);
+	}
+	
+	public Sprite rotateHorizontally() {
+		Sprite rotated = new Sprite(this.SPRITE_SIZE, 0);
+		rotated.setxOffset(this.xOffset);
+		rotated.setyOffset(this.yOffset);
+		rotated.setEntitySize(this.entitySize);
+		
+		for (int i = 0; i < SPRITE_SIZE; i++) {
+			for (int j = 0; j < SPRITE_SIZE; j++) {
+				rotated.pixels[i + j * SPRITE_SIZE] = this.pixels[(j + 1) * SPRITE_SIZE - i - 1];
+			}
+		}
+		
+		return rotated;
 	}
 
 	private void setColour(int colour) {
