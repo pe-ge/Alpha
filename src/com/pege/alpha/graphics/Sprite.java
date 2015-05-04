@@ -39,6 +39,7 @@ public class Sprite {
 		rotated.setxOffset(this.xOffset);
 		rotated.setyOffset(this.yOffset);
 		rotated.setEntitySize(this.entitySize);
+		rotated.spriteSheet = this.spriteSheet;
 		
 		for (int i = 0; i < SPRITE_SIZE; i++) {
 			for (int j = 0; j < SPRITE_SIZE; j++) {

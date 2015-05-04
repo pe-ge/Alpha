@@ -13,5 +13,4 @@ public class Sprites {
 	
 	public static Sprite redParticle = new Sprite(2, 0xfa0000);
 	public static Sprite blackParticle = new Sprite(1, 0);
-	
 }

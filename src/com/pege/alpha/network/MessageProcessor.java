@@ -40,6 +40,7 @@ public class MessageProcessor {
 
 	private void processPlayerMove(MessagePlayerMove message) {
 		NetworkRanger networkRanger = (NetworkRanger)findEntity(message);
+		networkRanger.setRunning(message.running);
 		networkRanger.moveXY(message.x, message. y);
 	}
 

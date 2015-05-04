@@ -3,7 +3,7 @@ package com.pege.alpha.graphics.spritesheets;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.graphics.SpriteSheet;
 
-public class Goku {
+public class GokuSprites {
 	public static Sprite[] standingUp = new Sprite[]{
 		new Sprite(32, 4, 0, SpriteSheet.goku, 15, 7, 15),
 	};

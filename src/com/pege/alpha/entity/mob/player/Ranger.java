@@ -1,16 +1,12 @@
 package com.pege.alpha.entity.mob.player;
 
-import java.awt.event.MouseEvent;
-
-import com.pege.alpha.Game;
 import com.pege.alpha.input.Keyboard;
-import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Ranger extends Player {
 
-	public Ranger(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
-		super(position, keyboard, mouse);
+	public Ranger(TileCoordinate position, Keyboard keyboard) {
+		super(position, keyboard);
 	}
 	
 	public void update() {
@@ -26,19 +22,37 @@ public class Ranger extends Player {
 		if (keyboard.left) dx -= speed;
 		if (keyboard.right) dx += speed;
 		
+		setRunning(keyboard.shift);
+		setSpeed();
+		
 		if (dx != 0 || dy != 0) {
 			walking = true;
 			move(dx, dy);
 		} else {
 			walking = false;
+			setRunning(false);
 		}
 	}
 	
 	private void updateShooting() {
 		fireAllowed--;
-		if (mouse.getButton() == MouseEvent.BUTTON1 && fireAllowed <= 0) {
-			double dy = mouse.getY() - Game.VERTICAL_CENTER;
-			double dx = mouse.getX() - Game.HORIZONTAL_CENTER;
+		if (keyboard.ctrl && fireAllowed <= 0) {
+			double dy = 0.0;
+			double dx = 0.0;
+			switch (direction) {
+				case UP:
+					dy = -1.0;
+					break;
+				case DOWN:
+					dy = 1.0;
+					break;
+				case LEFT:
+					dx = -1.0;
+					break;
+				case RIGHT:
+					dx = 1.0;
+					break;
+			}
 			shoot(x, y, Math.atan2(dy, dx));
 			fireAllowed = fireRate;
 		}

@@ -40,18 +40,21 @@ public class MessageDeconstructor {
 		byte[] playerHashData = new byte[INT_SIZE];
 		byte[] xPosData = new byte[DOUBLE_SIZE];
 		byte[] yPosData = new byte[DOUBLE_SIZE];
+		byte runningData;
 		
 		int i = 0;
 		for (int j = 0; j < messageTypeData.length; j++, i++) messageTypeData[j] = message[i];
 		for (int j = 0; j < playerHashData.length; j++, i++) playerHashData[j] = message[i];
 		for (int j = 0; j < xPosData.length; j++, i++) xPosData[j] = message[i];
 		for (int j = 0; j < yPosData.length; j++, i++) yPosData[j] = message[i];
+		runningData = message[i];
 		
 		int playerHash = toInt(playerHashData);
 		double xPos = toDouble(xPosData);
 		double yPos = toDouble(yPosData);
+		boolean running = toBoolean(runningData);
 
-		return new MessagePlayerMove(playerHash, xPos, yPos);
+		return new MessagePlayerMove(playerHash, xPos, yPos, running);
 	}
 	
 	private MessageProjectileNew deconstructProjectileNew(byte[] message) {
@@ -85,5 +88,9 @@ public class MessageDeconstructor {
 	
 	private int toInt(byte[] number) {
 		return ByteBuffer.wrap(number).asIntBuffer().get();
+	}
+	
+	private boolean toBoolean(byte number) {
+		return number == 1;
 	}
 }

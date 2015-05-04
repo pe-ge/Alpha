@@ -30,14 +30,16 @@ public class MessageConstructor {
 		byte[] playerHash = toByteArray(player.hashCode());
 		byte[] xPos = toByteArray(player.getX());
 		byte[] yPos = toByteArray(player.getY());
+		byte running = toByte(player.isRunning());
 		
-		byte[] message = new byte[messageType.length + playerHash.length + xPos.length + yPos.length];
+		byte[] message = new byte[messageType.length + playerHash.length + xPos.length + yPos.length + 1];
 		
 		int i = 0;
 		for (int j = 0; j < messageType.length; j++, i++) message[i] = messageType[j];
 		for (int j = 0; j < playerHash.length; j++, i++) message[i] = playerHash[j];
 		for (int j = 0; j < xPos.length; j++, i++) message[i] = xPos[j];
 		for (int j = 0; j < yPos.length; j++, i++) message[i] = yPos[j];
+		message[i] = running;
 		
 		return message;
 	}
@@ -82,5 +84,9 @@ public class MessageConstructor {
 	
 	private byte[] toByteArray(int number) {
 		return ByteBuffer.allocate(INT_SIZE).putInt(number).array();
+	}
+	
+	private byte toByte(boolean bool) {
+		return (byte)(bool ? 1 : 0);
 	}
 }

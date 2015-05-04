@@ -1,10 +1,6 @@
 package com.pege.alpha.entity.mob.player;
 
-import java.awt.event.MouseEvent;
-
-import com.pege.alpha.Game;
 import com.pege.alpha.input.Keyboard;
-import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Car extends Player {
@@ -13,8 +9,8 @@ public class Car extends Player {
 	private double speed = 0.0;
 	private int angle = 0;
 	
-	public Car(TileCoordinate position, Keyboard keyboard, Mouse mouse) {
-		super(position, keyboard, mouse);
+	public Car(TileCoordinate position, Keyboard keyboard) {
+		super(position, keyboard);
 	}
 	
 	public void update() {
@@ -40,9 +36,9 @@ public class Car extends Player {
 	
 	private void updateShooting() {
 		fireAllowed--;
-		if (mouse.getButton() == MouseEvent.BUTTON1 && fireAllowed <= 0) {
-			double dy = mouse.getY() - Game.VERTICAL_CENTER;
-			double dx = mouse.getX() - Game.HORIZONTAL_CENTER;
+		if (keyboard.space && fireAllowed <= 0) {
+			double dy = 1;
+			double dx = 1;
 			shoot(x, y, Math.atan2(dy, dx));
 			fireAllowed = fireRate;
 		}

@@ -1,11 +1,13 @@
 package com.pege.alpha.entity.mob;
 
+import java.util.Random;
+
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
-import com.pege.alpha.graphics.spritesheets.Goku;
+import com.pege.alpha.graphics.spritesheets.GokuSprites;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Mob extends Entity {
@@ -16,11 +18,20 @@ public class Mob extends Entity {
 	
 	protected Direction direction = Direction.DOWN;
 	protected boolean walking = false;
+	private boolean running = false;
+
+	protected int spriteIndex = 0;
+	
 	protected int fireRate = 20;
 	protected int fireAllowed = 0;
 	protected int time = 0;
 	protected int life = 100;
-	protected double speed = 2.0;
+	
+	protected final double walkingSpeed = 1.0;
+	protected final double runningSpeed = 2.0;
+	protected double speed = walkingSpeed;
+	
+	protected Random random = new Random();
 	
 	public Mob() {
 		this(0.0, 0.0);
@@ -29,11 +40,27 @@ public class Mob extends Entity {
 	public Mob(double x, double y) {
 		this.x = x;
 		this.y = y;
-		sprite = Goku.standingDown[0]; 
+		sprite = GokuSprites.standingDown[0]; 
 	}
 	
 	public Mob(TileCoordinate position) {
 		this(position.x(), position.y());
+	}
+	
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+	
+	public void setSpeed() {
+		if (isRunning()) {
+			speed = runningSpeed;
+		} else {
+			speed = walkingSpeed;
+		}
 	}
 	
 	public void move(double dx, double dy) {
@@ -42,7 +69,7 @@ public class Mob extends Entity {
 			move(0, dy);
 			return;
 		}
-		
+		 
 		if (dx > 0) direction = Direction.RIGHT;
 		if (dx < 0) direction = Direction.LEFT;
 		if (dy > 0) direction = Direction.DOWN;
@@ -99,27 +126,37 @@ public class Mob extends Entity {
 	}
 	
 	private void setSprite() {
-		if (direction == Direction.UP) setSprite(Goku.standingUp);
-		if (direction == Direction.DOWN) setSprite(Goku.standingDown);
-		if (direction == Direction.LEFT) setSprite(Goku.standingLeft);
-		if (direction == Direction.RIGHT) setSprite(Goku.standingRight);
+		if (!walking && !running) {
+			if (direction == Direction.UP) setSprite(GokuSprites.standingUp);
+			if (direction == Direction.DOWN) setSprite(GokuSprites.standingDown);
+			if (direction == Direction.LEFT) setSprite(GokuSprites.standingLeft);
+			if (direction == Direction.RIGHT) setSprite(GokuSprites.standingRight);
+		} else if (walking && !running) {
+			if (direction == Direction.UP) setSprite(GokuSprites.walkingUp);
+			if (direction == Direction.DOWN) setSprite(GokuSprites.walkingDown);
+			if (direction == Direction.LEFT) setSprite(GokuSprites.walkingLeft);
+			if (direction == Direction.RIGHT) setSprite(GokuSprites.walkingRight);
+		} else {
+			if (direction == Direction.UP) setSprite(GokuSprites.runningUp);
+			if (direction == Direction.DOWN) setSprite(GokuSprites.runningDown);
+			if (direction == Direction.LEFT) setSprite(GokuSprites.runningLeft);
+			if (direction == Direction.RIGHT) setSprite(GokuSprites.runningRight);
+		}
 	}
 	
 	private void setSprite(Sprite[] sprites) {
-		int index = 0;
-		if (!walking) {
-			index = 0;
-		} else if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-			index = (time >> 3) % 4;
-			if (index == 0) {
-				index = 1;
-			} else if (index == 1 || index == 3) {
-				index = 0;
+		if (!walking && !running) {
+			if (time % (random.nextInt(50) + 20) == 0) { //how long are eyes closed
+				spriteIndex = 0;
+			}
+			if (time % (random.nextInt(500) + 20) == 0) { //how often to blink
+				spriteIndex = 1;
 			}
 		} else {
-			index = (time >> 3) % (sprites.length - 1) + 1;
+			spriteIndex = time >> 3;
 		}
 		
-		sprite = sprites[index];
+		spriteIndex %= sprites.length;
+		sprite = sprites[spriteIndex];
 	}
 }

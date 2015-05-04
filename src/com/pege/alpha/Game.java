@@ -13,7 +13,6 @@ import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.entity.mob.player.Ranger;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.input.Keyboard;
-import com.pege.alpha.input.Mouse;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.level.TileCoordinate;
 import com.pege.alpha.network.Client;
@@ -25,14 +24,11 @@ public class Game extends Canvas {
 	private static final int WIDTH = 300;
 	private static final int HEIGHT = WIDTH / 16 * 9;
 	private static final int SCALE = 3;
-	public static final int HORIZONTAL_CENTER = Game.WIDTH * Game.SCALE / 2;
-	public static final int VERTICAL_CENTER = Game.HEIGHT * Game.SCALE / 2;
-	
+
 	public static String title = "Alpha";
 	
 	private JFrame frame;
 	private Keyboard keyboard;
-	private Mouse mouse;
 	private Level level;
 	private Player player;
 	private Client client;
@@ -50,10 +46,9 @@ public class Game extends Canvas {
 		frame = new JFrame();
 		screen = new Screen(WIDTH, HEIGHT);
 		keyboard = new Keyboard();
-		mouse = new Mouse();
 		level = Level.spawn;
 		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
-		player = new Ranger(playerSpawn, keyboard, mouse);
+		player = new Ranger(playerSpawn, keyboard);
 		client = new Client(address, port);
 		client.setLevel(level);
 		
@@ -66,8 +61,6 @@ public class Game extends Canvas {
 		}));
 		
 		addKeyListener(keyboard);
-		addMouseListener(mouse);
-		addMouseMotionListener(mouse);
 		
 		frame.setResizable(false);
 		frame.setTitle("Rain");

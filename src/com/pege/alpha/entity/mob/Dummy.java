@@ -1,7 +1,5 @@
 package com.pege.alpha.entity.mob;
 
-import java.util.Random;
-
 import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.level.TileCoordinate;
 
@@ -10,7 +8,6 @@ public class Dummy extends Mob {
 	private double xa = 0;
 	private double ya = 0;
 	private int radius;
-	private Random random = new Random();
 	
 	private Player player;
 
@@ -22,12 +19,12 @@ public class Dummy extends Mob {
 	public void update() {
 		super.update();
 		if (getDistanceFromPlayer() <= radius) {
-			xa = speed * signum((int)player.getX() - x);
-			ya = speed * signum((int)player.getY() - y);
+			xa = walkingSpeed * signum((int)player.getX() - x);
+			ya = walkingSpeed * signum((int)player.getY() - y);
 		} else {
 			if (time % (random.nextInt(50) + 30) == 0) {
-				xa = speed * (random.nextInt(3) - 1);
-				ya = speed * (random.nextInt(3) - 1);
+				xa = walkingSpeed * (random.nextInt(3) - 1);
+				ya = walkingSpeed * (random.nextInt(3) - 1);
 				
 				if (random.nextInt(3) == 0) {
 					xa = 0;
