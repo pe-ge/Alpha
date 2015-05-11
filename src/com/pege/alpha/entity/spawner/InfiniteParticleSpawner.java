@@ -2,7 +2,7 @@ package com.pege.alpha.entity.spawner;
 
 import com.pege.alpha.entity.particle.Particle;
 import com.pege.alpha.graphics.Screen;
-import com.pege.alpha.graphics.Sprites;
+import com.pege.alpha.graphics.sprites.GeneralSprites;
 import com.pege.alpha.level.Level;
 
 public class InfiniteParticleSpawner extends Spawner {
@@ -18,7 +18,7 @@ public class InfiniteParticleSpawner extends Spawner {
 
 	@Override
 	public void update() {
-		level.addEntity(new Particle(Sprites.blackParticle, x, y, life));
+		level.addEntity(new Particle(GeneralSprites.blackParticle, x, y, life));
 	}
 
 	@Override

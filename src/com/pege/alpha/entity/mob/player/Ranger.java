@@ -36,7 +36,12 @@ public class Ranger extends Player {
 	
 	private void updateShooting() {
 		fireAllowed--;
-		if (keyboard.ctrl && fireAllowed <= 0) {
+		if (keyboard.ctrl && !shooting) {
+			shooting = true;
+			shootTime = time;
+		}
+		
+		if (shooting && fireAllowed <= 0) {
 			double dy = 0.0;
 			double dx = 0.0;
 			switch (direction) {
@@ -54,6 +59,7 @@ public class Ranger extends Player {
 					break;
 			}
 			shoot(x, y, Math.atan2(dy, dx));
+			shooting = false;
 			fireAllowed = fireRate;
 		}
 	}

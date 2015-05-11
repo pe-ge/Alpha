@@ -6,7 +6,7 @@ import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.spawner.ParticleSpawner;
 import com.pege.alpha.graphics.Screen;
-import com.pege.alpha.graphics.Sprites;
+import com.pege.alpha.graphics.sprites.GeneralSprites;
 
 public abstract class Projectile extends Entity {
 	
@@ -54,12 +54,12 @@ public abstract class Projectile extends Entity {
 			distance += dd;
 		} else {
 			if (collisionTile) {
-				level.addEntity(new ParticleSpawner(Sprites.blackParticle, (int)x + 4, (int)y + 1, 20, 50, level));
+				level.addEntity(new ParticleSpawner(GeneralSprites.blackParticle, (int)x + 4, (int)y + 1, 20, 50, level));
 			}
 			if (collisionMob != null) {
 				int mobX = (int)collisionMob.getX();
 				int mobY = (int)collisionMob.getY();
-				level.addEntity(new ParticleSpawner(Sprites.redParticle, mobX, mobY, 20, 200, level));
+				level.addEntity(new ParticleSpawner(GeneralSprites.redParticle, mobX, mobY, 20, 200, level));
 			}
 			
 			remove();

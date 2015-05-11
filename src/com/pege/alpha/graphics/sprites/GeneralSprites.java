@@ -1,6 +1,9 @@
-package com.pege.alpha.graphics;
+package com.pege.alpha.graphics.sprites;
 
-public class Sprites {
+import com.pege.alpha.graphics.Sprite;
+import com.pege.alpha.graphics.SpriteSheet;
+
+public class GeneralSprites {
 	
 	public static Sprite grassSprite1 = new Sprite(16, 0, 0, SpriteSheet.tiles);
 	public static Sprite grassSprite2 = new Sprite(16, 0, 1, SpriteSheet.tiles);

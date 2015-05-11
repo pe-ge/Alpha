@@ -1,7 +1,7 @@
 package com.pege.alpha.entity.projectile;
 
 import com.pege.alpha.entity.mob.Mob;
-import com.pege.alpha.graphics.Sprites;
+import com.pege.alpha.graphics.sprites.GeneralSprites;
 
 public class BasicProjectile extends Projectile {
 	
@@ -11,7 +11,7 @@ public class BasicProjectile extends Projectile {
 		this.range = random.nextInt(150) + 150;
 		this.damage = 20;
 		this.distance = 0;
-		this.sprite = Sprites.projectile;
+		this.sprite = GeneralSprites.projectile;
 		
 		this.dx = speed * Math.cos(angle);
 		this.dy = speed * Math.sin(angle);

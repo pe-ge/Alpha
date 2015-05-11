@@ -7,7 +7,7 @@ import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
-import com.pege.alpha.graphics.spritesheets.GokuSprites;
+import com.pege.alpha.graphics.sprites.GokuSprites;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Mob extends Entity {
@@ -18,18 +18,21 @@ public class Mob extends Entity {
 	
 	protected Direction direction = Direction.DOWN;
 	protected boolean walking = false;
-	private boolean running = false;
+	protected boolean running = false;
+	protected boolean shooting = false;
 
 	protected int spriteIndex = 0;
-	
-	protected int fireRate = 20;
-	protected int fireAllowed = 0;
+		
 	protected int time = 0;
 	protected int life = 100;
 	
 	protected final double walkingSpeed = 1.0;
 	protected final double runningSpeed = 2.0;
 	protected double speed = walkingSpeed;
+	
+	protected int fireRate = 50;
+	protected int fireAllowed = 0;
+	protected int shootTime = 0;
 	
 	protected Random random = new Random();
 	
@@ -126,7 +129,12 @@ public class Mob extends Entity {
 	}
 	
 	private void setSprite() {
-		if (!walking && !running) {
+		if (shooting) {
+			if (direction == Direction.UP) setShootingSprite(GokuSprites.shootingUp);
+			if (direction == Direction.DOWN) setShootingSprite(GokuSprites.shootingDown);
+			if (direction == Direction.LEFT) setShootingSprite(GokuSprites.shootingLeft);
+			if (direction == Direction.RIGHT) setShootingSprite(GokuSprites.shootingRight);
+		} else if (!walking && !running) {
 			if (direction == Direction.UP) setSprite(GokuSprites.standingUp);
 			if (direction == Direction.DOWN) setSprite(GokuSprites.standingDown);
 			if (direction == Direction.LEFT) setSprite(GokuSprites.standingLeft);
@@ -158,5 +166,19 @@ public class Mob extends Entity {
 		
 		spriteIndex %= sprites.length;
 		sprite = sprites[spriteIndex];
+	}
+	
+	private void setShootingSprite(Sprite[] sprites) {
+		int index = 0;
+		int timeDiff = time - shootTime;
+		if (timeDiff >= fireRate) {
+			index = 0;
+		}
+		if (timeDiff >= fireRate + fireRate + 20) {
+			shooting = false;
+			shootTime = 0;
+			index = 1;
+		}
+		sprite = sprites[index];
 	}
 }

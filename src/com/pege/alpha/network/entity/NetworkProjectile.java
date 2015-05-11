@@ -2,7 +2,7 @@ package com.pege.alpha.network.entity;
 
 import com.pege.alpha.entity.mob.Mob;
 import com.pege.alpha.entity.projectile.Projectile;
-import com.pege.alpha.graphics.Sprites;
+import com.pege.alpha.graphics.sprites.GeneralSprites;
 
 public class NetworkProjectile extends Projectile {
 
@@ -16,7 +16,7 @@ public class NetworkProjectile extends Projectile {
 		this.range = random.nextInt(150) + 150;
 		this.damage = 20;
 		this.distance = 0;
-		this.sprite = Sprites.projectile;
+		this.sprite = GeneralSprites.projectile;
 		
 		this.dx = speed * Math.cos(angle);
 		this.dy = speed * Math.sin(angle);
