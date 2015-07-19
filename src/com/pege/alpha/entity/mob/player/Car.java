@@ -33,15 +33,5 @@ public class Car extends Player {
 		
 		move(dx, dy);
 	}
-	
-	private void updateShooting() {
-		fireAllowed--;
-		if (keyboard.space && fireAllowed <= 0) {
-			double dy = 1;
-			double dx = 1;
-			shoot(x, y, Math.atan2(dy, dx));
-			fireAllowed = fireRate;
-		}
-	}
 
 }

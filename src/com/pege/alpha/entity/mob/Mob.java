@@ -11,10 +11,6 @@ import com.pege.alpha.graphics.sprites.GokuSprites;
 import com.pege.alpha.level.TileCoordinate;
 
 public class Mob extends Entity {
-		
-	public enum Direction {
-		UP, DOWN, LEFT, RIGHT
-	}
 	
 	protected Direction direction = Direction.DOWN;
 	protected boolean walking = false;
@@ -26,13 +22,13 @@ public class Mob extends Entity {
 	protected int time = 0;
 	protected int life = 100;
 	
-	protected final double walkingSpeed = 1.0;
-	protected final double runningSpeed = 2.0;
-	protected double speed = walkingSpeed;
+	protected final double WALKING_SPEED = 1.0;
+	protected final double RUNNING_SPEED = 2.0;
+	protected double speed = WALKING_SPEED;
 	
 	protected int fireRate = 50;
 	protected int fireAllowed = 0;
-	protected int shootTime = 0;
+	protected int shootTime = Integer.MAX_VALUE;
 	
 	protected Random random = new Random();
 	
@@ -60,9 +56,9 @@ public class Mob extends Entity {
 	
 	public void setSpeed() {
 		if (isRunning()) {
-			speed = runningSpeed;
+			speed = RUNNING_SPEED;
 		} else {
-			speed = walkingSpeed;
+			speed = WALKING_SPEED;
 		}
 	}
 	
@@ -114,13 +110,25 @@ public class Mob extends Entity {
 		return xi;
 	}
 
-	protected void shoot(double x, double y, double angle) {
-		Projectile projectile = new BasicProjectile(this, x, y, angle);
-		level.addEntity(projectile);
+	protected void shoot() {
+		shooting = true;
+		shootTime = time;
 	}
 	
 	public void update() {
 		time = (time != 100000 ? time + 1 : 0); //increment time
+		updateShooting();
+	}
+	
+	protected void updateShooting() {
+		fireAllowed--; // TODO: refactor (variable can overflow)
+		//System.out.println(shooting + " " + (fireAllowed < 0) + (time - shootTime > fireRate));
+		if (shooting && fireAllowed < 0 && time - shootTime > fireRate) {
+			double angle = Math.atan2(direction.getY(), direction.getX());
+			Projectile projectile = new BasicProjectile(this, x, y, angle);
+			level.addEntity(projectile);
+			fireAllowed = fireRate;
+		}
 	}
 	
 	public void render(Screen screen) {
@@ -172,12 +180,10 @@ public class Mob extends Entity {
 		int index = 0;
 		int timeDiff = time - shootTime;
 		if (timeDiff >= fireRate) {
-			index = 0;
-		}
-		if (timeDiff >= fireRate + fireRate + 20) {
-			shooting = false;
-			shootTime = 0;
 			index = 1;
+		}
+		if (timeDiff > fireRate + 10) {
+			shooting = false;
 		}
 		sprite = sprites[index];
 	}

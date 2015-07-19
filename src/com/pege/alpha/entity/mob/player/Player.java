@@ -13,4 +13,10 @@ public abstract class Player extends Mob {
 		this.keyboard = keyboard;
 	}
 
+	public void update() {
+		super.update();
+		if (keyboard.ctrl) {
+			shoot();
+		}
+	}
 }

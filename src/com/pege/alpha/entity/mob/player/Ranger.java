@@ -33,35 +33,5 @@ public class Ranger extends Player {
 			setRunning(false);
 		}
 	}
-	
-	private void updateShooting() {
-		fireAllowed--;
-		if (keyboard.ctrl && !shooting) {
-			shooting = true;
-			shootTime = time;
-		}
-		
-		if (shooting && fireAllowed <= 0) {
-			double dy = 0.0;
-			double dx = 0.0;
-			switch (direction) {
-				case UP:
-					dy = -1.0;
-					break;
-				case DOWN:
-					dy = 1.0;
-					break;
-				case LEFT:
-					dx = -1.0;
-					break;
-				case RIGHT:
-					dx = 1.0;
-					break;
-			}
-			shoot(x, y, Math.atan2(dy, dx));
-			shooting = false;
-			fireAllowed = fireRate;
-		}
-	}
 
 }

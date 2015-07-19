@@ -19,12 +19,12 @@ public class Dummy extends Mob {
 	public void update() {
 		super.update();
 		if (getDistanceFromPlayer() <= radius) {
-			xa = walkingSpeed * signum((int)player.getX() - x);
-			ya = walkingSpeed * signum((int)player.getY() - y);
+			xa = WALKING_SPEED * signum((int)player.getX() - x);
+			ya = WALKING_SPEED * signum((int)player.getY() - y);
 		} else {
 			if (time % (random.nextInt(50) + 30) == 0) {
-				xa = walkingSpeed * (random.nextInt(3) - 1);
-				ya = walkingSpeed * (random.nextInt(3) - 1);
+				xa = WALKING_SPEED * (random.nextInt(3) - 1);
+				ya = WALKING_SPEED * (random.nextInt(3) - 1);
 				
 				if (random.nextInt(3) == 0) {
 					xa = 0;
