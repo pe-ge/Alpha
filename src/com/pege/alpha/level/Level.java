@@ -35,7 +35,7 @@ public class Level {
 		try {
 			BufferedImage image = ImageIO.read(Level.class.getResource(path));
 			width = image.getWidth();
-			height = image.getWidth();
+			height = image.getHeight();
 			tiles = new int[width * height];
 			image.getRGB(0, 0, width, height, tiles, 0, width);
 		} catch (IOException e) {
@@ -123,7 +123,7 @@ public class Level {
 		return Tile.voidTile;
 	}
 	
-	public boolean collisionEntityTile(Entity e, double dx, double dy) {
+	public boolean collisionEntityTile(Entity e, double tileX, double tileY) {
 		Sprite s = e.getSprite();
 		if (s == null) {
 			return false;
@@ -134,8 +134,8 @@ public class Level {
 		int yOffset = s.getyOffset();
 		boolean solid = false;
 		for (int c = 0; c < 4; c++) { //4 corners of sprite
-			int xt = ((int)(e.getX() + dx) - c % 2 * size + xOffset) >> 4;
-			int yt = ((int)(e.getY() + dy) - c / 2 * size + yOffset) >> 4;
+			int xt = ((int)(e.getX() + tileX) - c % 2 * size + xOffset) >> 4;
+			int yt = ((int)(e.getY() + tileY) - c / 2 * size + yOffset) >> 4;
 			solid |= getTile(xt, yt).solid();
 		}
 		return solid;

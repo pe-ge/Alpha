@@ -63,7 +63,7 @@ public class Game extends Canvas {
 		addKeyListener(keyboard);
 		
 		frame.setResizable(false);
-		frame.setTitle("Rain");
+		frame.setTitle(title);
 		frame.add(this);
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

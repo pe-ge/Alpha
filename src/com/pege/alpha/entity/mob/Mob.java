@@ -12,25 +12,25 @@ import com.pege.alpha.level.TileCoordinate;
 
 public class Mob extends Entity {
 	
+	protected int time = 0;
+	protected int health = 100;
+	protected Random random = new Random();
+	
+	// movement-related variables
 	protected Direction direction = Direction.DOWN;
 	protected boolean walking = false;
 	protected boolean running = false;
-	protected boolean shooting = false;
-
-	protected int spriteIndex = 0;
-		
-	protected int time = 0;
-	protected int life = 100;
-	
 	protected final double WALKING_SPEED = 1.0;
 	protected final double RUNNING_SPEED = 2.0;
 	protected double speed = WALKING_SPEED;
+	protected int spriteIndex = 0;
 	
-	protected int fireRate = 50;
-	protected int fireAllowed = 0;
-	protected int shootTime = Integer.MAX_VALUE;
-	
-	protected Random random = new Random();
+	// shooting-related variables
+	protected boolean shooting = false;
+	protected int shootTime = 0;
+	protected final int CHARGING_TIME = 15;
+	protected final int FIRING_TIME = 30;
+	protected final int FIRE_RATE = CHARGING_TIME + FIRING_TIME;
 	
 	public Mob() {
 		this(0.0, 0.0);
@@ -63,6 +63,10 @@ public class Mob extends Entity {
 	}
 	
 	public void move(double dx, double dy) {
+		if (shooting) {
+			return;
+		}
+		
 		if (dx != 0 && dy != 0) {
 			move(dx, 0);
 			move(0, dy);
@@ -116,18 +120,27 @@ public class Mob extends Entity {
 	}
 	
 	public void update() {
-		time = (time != 100000 ? time + 1 : 0); //increment time
+		tick();
 		updateShooting();
 	}
 	
+	protected void tick() {
+		time = (time != 100000 ? time + 1 : 0);
+	}
+	
 	protected void updateShooting() {
-		fireAllowed--; // TODO: refactor (variable can overflow)
-		//System.out.println(shooting + " " + (fireAllowed < 0) + (time - shootTime > fireRate));
-		if (shooting && fireAllowed < 0 && time - shootTime > fireRate) {
-			double angle = Math.atan2(direction.getY(), direction.getX());
-			Projectile projectile = new BasicProjectile(this, x, y, angle);
-			level.addEntity(projectile);
-			fireAllowed = fireRate;
+		if (shooting) {
+			int timeDiff = time - shootTime - CHARGING_TIME;
+			
+			if (timeDiff == 0) {
+				double angle = Math.atan2(direction.getY(), direction.getX());
+				Projectile projectile = new BasicProjectile(this, x, y, angle);
+				level.addEntity(projectile);
+			}
+			
+			if (timeDiff == FIRING_TIME) {
+				shooting = false;
+			}
 		}
 	}
 	
@@ -177,14 +190,17 @@ public class Mob extends Entity {
 	}
 	
 	private void setShootingSprite(Sprite[] sprites) {
-		int index = 0;
-		int timeDiff = time - shootTime;
-		if (timeDiff >= fireRate) {
-			index = 1;
+		int spriteIndex = 0;
+		
+		int startFiring = time - shootTime - CHARGING_TIME;
+		if (startFiring > 0) {
+			if ((startFiring / FIRING_TIME) % 2 == 0) {
+				spriteIndex = 1;
+			} else {
+				spriteIndex = 2;
+			}
 		}
-		if (timeDiff > fireRate + 10) {
-			shooting = false;
-		}
-		sprite = sprites[index];
+		
+		sprite = sprites[spriteIndex];
 	}
 }
