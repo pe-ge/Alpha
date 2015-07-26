@@ -54,7 +54,7 @@ public class Mob extends Entity {
 		this.running = running;
 	}
 	
-	public void setSpeed() {
+	public void updateSpeed() {
 		if (isRunning()) {
 			speed = RUNNING_SPEED;
 		} else {
@@ -156,24 +156,24 @@ public class Mob extends Entity {
 			if (direction == Direction.LEFT) setShootingSprite(GokuSprites.shootingLeft);
 			if (direction == Direction.RIGHT) setShootingSprite(GokuSprites.shootingRight);
 		} else if (!walking && !running) {
-			if (direction == Direction.UP) setSprite(GokuSprites.standingUp);
-			if (direction == Direction.DOWN) setSprite(GokuSprites.standingDown);
-			if (direction == Direction.LEFT) setSprite(GokuSprites.standingLeft);
-			if (direction == Direction.RIGHT) setSprite(GokuSprites.standingRight);
+			if (direction == Direction.UP) setBasicSprite(GokuSprites.standingUp);
+			if (direction == Direction.DOWN) setBasicSprite(GokuSprites.standingDown);
+			if (direction == Direction.LEFT) setBasicSprite(GokuSprites.standingLeft);
+			if (direction == Direction.RIGHT) setBasicSprite(GokuSprites.standingRight);
 		} else if (walking && !running) {
-			if (direction == Direction.UP) setSprite(GokuSprites.walkingUp);
-			if (direction == Direction.DOWN) setSprite(GokuSprites.walkingDown);
-			if (direction == Direction.LEFT) setSprite(GokuSprites.walkingLeft);
-			if (direction == Direction.RIGHT) setSprite(GokuSprites.walkingRight);
+			if (direction == Direction.UP) setBasicSprite(GokuSprites.walkingUp);
+			if (direction == Direction.DOWN) setBasicSprite(GokuSprites.walkingDown);
+			if (direction == Direction.LEFT) setBasicSprite(GokuSprites.walkingLeft);
+			if (direction == Direction.RIGHT) setBasicSprite(GokuSprites.walkingRight);
 		} else {
-			if (direction == Direction.UP) setSprite(GokuSprites.runningUp);
-			if (direction == Direction.DOWN) setSprite(GokuSprites.runningDown);
-			if (direction == Direction.LEFT) setSprite(GokuSprites.runningLeft);
-			if (direction == Direction.RIGHT) setSprite(GokuSprites.runningRight);
+			if (direction == Direction.UP) setBasicSprite(GokuSprites.runningUp);
+			if (direction == Direction.DOWN) setBasicSprite(GokuSprites.runningDown);
+			if (direction == Direction.LEFT) setBasicSprite(GokuSprites.runningLeft);
+			if (direction == Direction.RIGHT) setBasicSprite(GokuSprites.runningRight);
 		}
 	}
 	
-	private void setSprite(Sprite[] sprites) {
+	private void setBasicSprite(Sprite[] sprites) {
 		if (!walking && !running) {
 			if (time % (random.nextInt(50) + 20) == 0) { //how long are eyes closed
 				spriteIndex = 0;

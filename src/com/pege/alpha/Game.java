@@ -46,7 +46,7 @@ public class Game extends Canvas {
 		frame = new JFrame();
 		screen = new Screen(WIDTH, HEIGHT);
 		keyboard = new Keyboard();
-		level = Level.spawn;
+		level = Level.level1;
 		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
 		player = new Ranger(playerSpawn, keyboard);
 		client = new Client(address, port);

@@ -6,10 +6,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import com.pege.alpha.entity.Entity;
 import com.pege.alpha.entity.mob.player.Player;
@@ -31,7 +30,7 @@ public class Client extends Thread {
 	private Level level;
 	
 	private long lastUpdatedTime = System.nanoTime();
-	private long updateRate = 200000000; //0.2sec
+	private long updateRate = 200000000L; //0.2sec
 	
 	public Client(String serverAddress, int serverPort) {
 		super("Alpha Client");
@@ -81,16 +80,11 @@ public class Client extends Thread {
 	}
 	
 	public void sendEntities() {
-		final List<Entity> entitiesToSend = new ArrayList<Entity>(level.getEntitiesToSend());
-		level.getEntitiesToSend().clear();
-		Thread sender = new Thread("Sender") {
-			public void run() {
-				for (Entity e : entitiesToSend) {
-					send(e);
-				}
-			}
-		};
-		sender.start();
+		Queue<Entity> entitiesToSend = level.getEntitiesToSend();
+		while (!entitiesToSend.isEmpty()) {
+			Entity entity = entitiesToSend.poll();
+			send(entity);
+		}
 	}
 	
 	private void send(Entity e) {

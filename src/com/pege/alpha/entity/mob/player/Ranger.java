@@ -12,7 +12,6 @@ public class Ranger extends Player {
 	public void update() {
 		super.update();
 		updateMovement();
-		updateShooting();
 	}
 	
 	private void updateMovement() {
@@ -23,7 +22,7 @@ public class Ranger extends Player {
 		if (keyboard.right) dx += speed;
 		
 		setRunning(keyboard.shift);
-		setSpeed();
+		updateSpeed();
 		
 		if (dx != 0 || dy != 0) {
 			walking = true;

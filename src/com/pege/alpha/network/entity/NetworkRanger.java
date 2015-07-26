@@ -24,7 +24,7 @@ public class NetworkRanger extends Mob {
 
 	private void updateMovement() {
 		if (Math.abs(moveX - x) + Math.abs(moveY - y) < skipDistance) {
-			setSpeed();
+			updateSpeed();
 			double dx = speed * signum(moveX - x);
 			double dy = speed * signum(moveY - y);
 			if (dx != 0 || dy != 0) {

@@ -4,8 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.imageio.ImageIO;
 
@@ -20,16 +21,20 @@ import com.pege.alpha.level.tile.Tile;
 
 public class Level {
 	
+	// MAP RELATED FIELDS
 	private int width, height;
 	private int[] tiles;
 	
-	private List<Entity> entities = new ArrayList<Entity>();
-	private List<Entity> entitiesToBeAdded = new ArrayList<Entity>();
+	// ENTITY RELATED FIELDS 
+	private List<Entity> levelEntities = new ArrayList<Entity>();
+	private List<Entity> entitiesToAdd = new ArrayList<Entity>();
 	private List<Mob> mobs = new ArrayList<Mob>();
 	private Player player;
-	private List<Entity> entitiesToSend = new LinkedList<Entity>();
+	
+	private Queue<Entity> entitiesToSend = new ConcurrentLinkedQueue<Entity>();
 
-	public static Level spawn = new Level("/levels/level1.png");
+	// LEVELS
+	public static Level level1 = new Level("/levels/level1.png");
 	
 	public Level(String path) {
 		try {
@@ -52,7 +57,7 @@ public class Level {
 	}
 
 	public void update() {
-		for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext();) {
+		for (Iterator<Entity> iterator = levelEntities.iterator(); iterator.hasNext();) {
 			Entity e = iterator.next();
 			e.update();
 			if (e.removed()) {
@@ -61,9 +66,13 @@ public class Level {
 			}
 		}
 		
-		entities.addAll(entitiesToBeAdded);
-		entitiesToBeAdded.clear();
+		levelEntities.addAll(entitiesToAdd);
+		entitiesToAdd.clear();
 		
+		sendPlayerPosition();
+	}
+	
+	private void sendPlayerPosition() {
 		entitiesToSend.add(getPlayer());
 	}
 	
@@ -80,7 +89,7 @@ public class Level {
 			}
 		}
 		
-		for (Entity e : entities) {
+		for (Entity e : levelEntities) {
 			e.render(screen);
 		}
 	}
@@ -97,13 +106,13 @@ public class Level {
 		return player;
 	}
 	
-	public List<Entity> getEntitiesToSend() {
+	public Queue<Entity> getEntitiesToSend() {
 		return entitiesToSend;
 	}
 	
 	public void addEntity(Entity e) {
 		e.setLevel(this);
-		entitiesToBeAdded.add(e);
+		entitiesToAdd.add(e);
 		if (e instanceof Mob) mobs.add((Mob)e);
 		
 		if (e instanceof BasicProjectile) entitiesToSend.add(e);
