@@ -12,10 +12,11 @@ import javax.swing.JFrame;
 import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.entity.mob.player.Ranger;
 import com.pege.alpha.graphics.Screen;
+import com.pege.alpha.graphics.ui.UIManager;
 import com.pege.alpha.input.Keyboard;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.level.TileCoordinate;
-import com.pege.alpha.network.Client;
+import com.pege.alpha.network.NetworkHandler;
 
 public class Game extends Canvas {
 	
@@ -31,7 +32,8 @@ public class Game extends Canvas {
 	private Keyboard keyboard;
 	private Level level;
 	private Player player;
-	private Client client;
+	private NetworkHandler networkHandler;
+	private UIManager uiManager;
 	
 	private boolean running = false;
 	
@@ -49,14 +51,15 @@ public class Game extends Canvas {
 		level = Level.level1;
 		TileCoordinate playerSpawn = new TileCoordinate(6, 2);
 		player = new Ranger(playerSpawn, keyboard);
-		client = new Client(address, port);
-		client.setLevel(level);
+		networkHandler = new NetworkHandler(address, port);
+		networkHandler.setLevel(level);
+		uiManager = new UIManager();
 		
 		level.addEntity(player);
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		    public void run() {
 		    	running = false;
-		    	client.disconnect(player);
+		    	networkHandler.disconnect(player);
 		    }
 		}));
 		
@@ -73,7 +76,7 @@ public class Game extends Canvas {
 	
 	public synchronized void start() {
 		running = true;
-		client.start();
+		networkHandler.start();
 		run();
 	}
 
@@ -109,7 +112,7 @@ public class Game extends Canvas {
 	private void update() {
 		keyboard.update();
 		level.update();
-		client.sendEntities();
+		networkHandler.sendEntities();
 	}
 	
 	private void render() {
@@ -130,6 +133,7 @@ public class Game extends Canvas {
 		
 		Graphics graphics = bufferStrategy.getDrawGraphics();
 		graphics.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+		uiManager.render(graphics);
 		graphics.dispose();
 		bufferStrategy.show();
 	}

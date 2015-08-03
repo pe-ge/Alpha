@@ -15,7 +15,7 @@ import com.pege.alpha.entity.mob.player.Player;
 import com.pege.alpha.level.Level;
 import com.pege.alpha.network.message.Message;
 
-public class Client extends Thread {
+public class NetworkHandler extends Thread {
 
 	private DatagramSocket socket;
 	private InetAddress serverAddress;
@@ -32,7 +32,7 @@ public class Client extends Thread {
 	private long lastUpdatedTime = System.nanoTime();
 	private long updateRate = 200000000L; //0.2sec
 	
-	public Client(String serverAddress, int serverPort) {
+	public NetworkHandler(String serverAddress, int serverPort) {
 		super("Alpha Client");
 		
 		try {
@@ -42,10 +42,11 @@ public class Client extends Thread {
 		} catch (UnknownHostException | SocketException e) {
 			e.printStackTrace();
 		}
-		this.running = true;
 		this.messageConstructor = new MessageConstructor();
 		this.messageDeconstructor = new MessageDeconstructor();
 		this.messageProcessor = new MessageProcessor(networkEntities);
+		
+		this.running = true;
 	}
 	
 	public void setLevel(Level level) {
