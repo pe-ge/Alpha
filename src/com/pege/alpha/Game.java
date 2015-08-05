@@ -113,6 +113,7 @@ public class Game extends Canvas {
 		keyboard.update();
 		level.update();
 		networkHandler.sendEntities();
+		uiManager.getStatusBar().setHealth(player.getHealth());
 	}
 	
 	private void render() {

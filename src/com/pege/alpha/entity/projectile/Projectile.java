@@ -12,8 +12,8 @@ public abstract class Projectile extends Entity {
 	
 	protected Mob owner;
 	protected double angle;
-	protected double speed;
-	protected double range, damage;
+	protected int speed;
+	protected int range, damage;
 	protected double distance;
 	
 	protected double dx, dy, dd;
@@ -60,6 +60,7 @@ public abstract class Projectile extends Entity {
 				int mobX = (int)collisionMob.getX();
 				int mobY = (int)collisionMob.getY();
 				level.addEntity(new ParticleSpawner(GeneralSprites.redParticle, mobX, mobY, 20, 200, level));
+				collisionMob.setHealth(collisionMob.getHealth() - damage);
 			}
 			
 			remove();

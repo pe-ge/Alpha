@@ -14,6 +14,7 @@ public class Mob extends Entity {
 	
 	protected int time = 0;
 	protected int health = 100;
+
 	protected Random random = new Random();
 	
 	// movement-related variables
@@ -202,5 +203,13 @@ public class Mob extends Entity {
 		}
 		
 		sprite = sprites[spriteIndex];
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 }

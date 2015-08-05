@@ -6,6 +6,7 @@ import java.util.List;
 
 public class UIManager {
 	private List<UIComponent> userInterface;
+	private UIStatusBar statusBar;
 	
 	public UIManager() {
 		userInterface = new ArrayList<UIComponent>();
@@ -16,5 +17,16 @@ public class UIManager {
 		for (UIComponent uiComponent : userInterface) {
 			uiComponent.render(g);
 		}
+	}
+	
+	public UIStatusBar getStatusBar() {
+		if (statusBar == null) {
+			for (UIComponent uiComponent : userInterface) {
+				if (uiComponent instanceof UIStatusBar) {
+					statusBar = (UIStatusBar)uiComponent;
+				}
+			}
+		}
+		return statusBar;
 	}
 }

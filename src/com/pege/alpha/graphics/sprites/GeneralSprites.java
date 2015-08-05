@@ -14,6 +14,6 @@ public class GeneralSprites {
 	
 	public static Sprite projectile = new Sprite(16, 0, 0, SpriteSheet.projectiles, 5, 6, 6);
 	
-	public static Sprite redParticle = new Sprite(2, 0xfa0000);
+	public static Sprite redParticle = new Sprite(1, 0xfa0000);
 	public static Sprite blackParticle = new Sprite(1, 0);
 }
