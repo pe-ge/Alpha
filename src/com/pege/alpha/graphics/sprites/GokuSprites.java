@@ -5,7 +5,7 @@ import com.pege.alpha.graphics.SpriteSheet;
 
 public class GokuSprites {
 	
-	/* ================================================== */
+	/* =============== STANDING SPRITES ================= */
 	public static Sprite[] standingUp = new Sprite[]{
 		new Sprite(32, 4, 0, SpriteSheet.goku, 15, 7, 15),
 	};
@@ -24,7 +24,8 @@ public class GokuSprites {
 		standingRight[0].rotateHorizontally(),
 		standingRight[1].rotateHorizontally()
 	};
-	/* ================================================== */
+	
+	/* =============== WALKING SPRITES ================= */
 	public static Sprite[] walkingUp = new Sprite[]{
 		new Sprite(32, 0, 2, SpriteSheet.goku, 15, 7, 15),
 		new Sprite(32, 1, 2, SpriteSheet.goku, 15, 7, 15),
@@ -52,7 +53,8 @@ public class GokuSprites {
 		walkingRight[2].rotateHorizontally(),
 		walkingRight[3].rotateHorizontally()
 	};
-	/* ================================================== */
+	
+	/* =============== RUNNING SPRITES ================= */
 	public static Sprite[] runningUp = new Sprite[]{
 		new Sprite(32, 4, 3, SpriteSheet.goku, 15, 7, 15),
 		new Sprite(32, 5, 3, SpriteSheet.goku, 15, 7, 15),
@@ -80,7 +82,8 @@ public class GokuSprites {
 		runningRight[2].rotateHorizontally(),
 		runningRight[3].rotateHorizontally()
 	};
-	/* ================================================== */
+	
+	/* =============== SHOOTING SPRITES ================= */
 	public static Sprite[] shootingUp = new Sprite[]{
 		new Sprite(32, 8, 6, SpriteSheet.goku, 15, 7, 15),
 		new Sprite(32, 8, 7, SpriteSheet.goku, 15, 7, 15),
@@ -104,4 +107,18 @@ public class GokuSprites {
 		shootingRight[1].rotateHorizontally(),
 		shootingRight[2].rotateHorizontally()
 	};
+	
+	/* ================== DYING SPRITES ================= */
+	public static Sprite[] dyingRight = new Sprite[]{
+			new Sprite(32, 4, 8, SpriteSheet.goku, 15, 7, 15),
+			new Sprite(32, 5, 8, SpriteSheet.goku, 15, 7, 15),
+			new Sprite(32, 6, 8, SpriteSheet.goku, 15, 7, 15),
+			new Sprite(32, 7, 8, SpriteSheet.goku, 15, 7, 15)
+		};
+	public static Sprite[] dyingLeft = new Sprite[]{
+			dyingRight[0].rotateHorizontally(),
+			dyingRight[1].rotateHorizontally(),
+			dyingRight[2].rotateHorizontally(),
+			dyingRight[3].rotateHorizontally()
+		};
 }

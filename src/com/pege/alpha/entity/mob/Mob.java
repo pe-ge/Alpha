@@ -14,6 +14,7 @@ public class Mob extends Entity {
 	
 	protected int time = 0;
 	protected int health = 100;
+	protected boolean alive = true;
 
 	protected Random random = new Random();
 	
@@ -123,6 +124,9 @@ public class Mob extends Entity {
 	public void update() {
 		tick();
 		updateShooting();
+		if (health <= 0) {
+			alive = false;
+		}
 	}
 	
 	protected void tick() {
@@ -151,7 +155,9 @@ public class Mob extends Entity {
 	}
 	
 	private void setSprite() {
-		if (shooting) {
+		if (!alive) {
+			setBasicSprite(GokuSprites.dyingRight);
+		} else if (shooting) {
 			if (direction == Direction.UP) setShootingSprite(GokuSprites.shootingUp);
 			if (direction == Direction.DOWN) setShootingSprite(GokuSprites.shootingDown);
 			if (direction == Direction.LEFT) setShootingSprite(GokuSprites.shootingLeft);
@@ -173,9 +179,9 @@ public class Mob extends Entity {
 			if (direction == Direction.RIGHT) setBasicSprite(GokuSprites.runningRight);
 		}
 	}
-	
+
 	private void setBasicSprite(Sprite[] sprites) {
-		if (!walking && !running) {
+		if (!walking && !running && alive) {
 			if (time % (random.nextInt(50) + 20) == 0) { //how long are eyes closed
 				spriteIndex = 0;
 			}

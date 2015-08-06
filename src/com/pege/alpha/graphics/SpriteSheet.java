@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 
 public class SpriteSheet {
 
-	private String path;
 	public final int SIZE;
 	public int[] pixels;
 	
@@ -16,13 +15,8 @@ public class SpriteSheet {
 	public static SpriteSheet goku = new SpriteSheet("/sprites/goku.png", 288);
 	
 	public SpriteSheet(String path, int size) {
-		this.path = path;
 		SIZE = size;
 		pixels = new int[SIZE * SIZE];
-		load();
-	}
-	
-	private void load() {
 		try {
 			BufferedImage image = ImageIO.read(SpriteSheet.class.getResource(path));
 			int width = image.getWidth();
@@ -31,5 +25,7 @@ public class SpriteSheet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
+
 }
