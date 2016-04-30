@@ -1,5 +1,7 @@
 package com.pege.alpha.level.tile;
 
+import java.util.HashMap;
+
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
 import com.pege.alpha.graphics.sprites.GeneralSprites;
@@ -20,6 +22,8 @@ public abstract class Tile {
 	public static final int COLOUR_FLOWER = 0xffffff00;
 	public static final int COLOUR_ROCK = 0xffbababa;
 	public static final int COLOUR_WOOD = 0xff7f7f00;
+	
+	public static HashMap<Integer, Tile> tiles = new HashMap<Integer, Tile>();
 
 	public Tile(Sprite sprite) {
 		this.sprite = sprite;

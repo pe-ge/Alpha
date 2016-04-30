@@ -9,7 +9,7 @@ public class RockTile extends Tile {
 	}
 	
 	public boolean solid() {
-		return true;
+		return false;
 	}
 
 }

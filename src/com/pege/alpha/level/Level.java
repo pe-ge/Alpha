@@ -17,6 +17,7 @@ import com.pege.alpha.entity.projectile.BasicProjectile;
 import com.pege.alpha.entity.projectile.Projectile;
 import com.pege.alpha.graphics.Screen;
 import com.pege.alpha.graphics.Sprite;
+import com.pege.alpha.graphics.sprites.GeneralSprites;
 import com.pege.alpha.level.tile.Tile;
 
 public class Level {
@@ -34,7 +35,7 @@ public class Level {
 	private Queue<Entity> entitiesToSend = new ConcurrentLinkedQueue<Entity>();
 
 	// LEVELS
-	public static Level level1 = new Level("/levels/level1.png");
+	public static Level level1 = new Level("/levels/svidnikREAL.png");
 	
 	public Level(String path) {
 		try {
@@ -122,7 +123,7 @@ public class Level {
 		if (e instanceof Mob) mobs.remove(e);
 	}
 	
-	public Tile getTile(int x, int y) {
+	/*public Tile getTile(int x, int y) {
 		if (x < 0 || x >= width || y < 0 || y >= height) return Tile.voidTile;
 		if (tiles[x + y * width] == Tile.COLOUR_GRASS1) return Tile.grassTile1;
 		if (tiles[x + y * width] == Tile.COLOUR_GRASS2) return Tile.grassTile2;
@@ -130,6 +131,19 @@ public class Level {
 		if (tiles[x + y * width] == Tile.COLOUR_ROCK) return Tile.rockTile;
 		if (tiles[x + y * width] == Tile.COLOUR_WOOD) return Tile.woodTile;
 		return Tile.voidTile;
+	}*/
+	
+	public Tile getTile(int x, int y) {
+		if (x < 0 || x >= width || y < 0 || y >= height) return Tile.voidTile;
+		
+		int tile = tiles[x + y * width];
+		Tile result = Tile.tiles.get(tile);
+		if (result == null) {
+			result = new Tile(new Sprite(16, tile)) {
+			};
+		}
+		
+		return result;
 	}
 	
 	public boolean collisionEntityTile(Entity e, double tileX, double tileY) {

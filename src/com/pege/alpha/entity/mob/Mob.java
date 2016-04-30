@@ -23,7 +23,7 @@ public class Mob extends Entity {
 	protected boolean walking = false;
 	protected boolean running = false;
 	protected final double WALKING_SPEED = 1.0;
-	protected final double RUNNING_SPEED = 2.0;
+	protected final double RUNNING_SPEED = 15.0;
 	protected double speed = WALKING_SPEED;
 	protected int spriteIndex = 0;
 	
